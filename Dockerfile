@@ -1,6 +1,9 @@
 # A dockerfile for running the t2wml backend
 FROM python:3.7-stretch
 
+RUN apt-get update
+RUN apt-get install sqlite3
+
 RUN mkdir /src
 
 COPY requirements.txt /src/requirements.txt
