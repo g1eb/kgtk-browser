@@ -2,7 +2,7 @@
 
 # Define some locations and options:
 
-export INPUT_FILE="/data/kg_files/20211007_venice.tsv"
+export INPUT_FILE="/data/kg_files/venice.tsv"
 export WORKING_FOLDER="./temp"
 export GRAPHS="./graphs"
 
