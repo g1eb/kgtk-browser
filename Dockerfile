@@ -14,7 +14,7 @@ COPY kgtk_browser_config.py /src/
 COPY kgtk_browser_app.py /src/
 COPY browser/backend/ /src/browser/backend/
 COPY post_deploy.sh /src/
-COPY venice /src/
+COPY venice/ /src/venice/
 
 ARG FLASK_ENV=production
 ENV FLASK_ENV=$FLASK_ENV
@@ -28,5 +28,3 @@ ENV KGTK_BROWSER_CONFIG=$KGTK_BROWSER_CONFIG
 WORKDIR /src
 
 EXPOSE 5006
-
-ENTRYPOINT flask run --host 0.0.0.0 --port 5006
