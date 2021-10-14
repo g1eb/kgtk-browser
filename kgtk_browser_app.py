@@ -2126,3 +2126,10 @@ def get_mf_scores_and_concreteness_by_date():
     except Exception as e:
         print('ERROR: ' + str(e))
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+@app.route('/kb/get_acled_forecast/<string:filename>', methods=['GET'])
+def get_acled_forecast(filename):
+
+    forecast_data = open('/data/forecasts/{}'.format(filename)).read()
+
+    return forecast_data
