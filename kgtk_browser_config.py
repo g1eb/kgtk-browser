@@ -479,10 +479,8 @@ def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(node):
         inputs=('edges', 'qualifiers'),
         maxcache=MAX_CACHE_SIZE * 10,
         match='''
-          $edges: (:`%s`)-[:P31]->(:`Q00_venice_participant`),
-          $edges: (actor)-[:P1344]->(event),
+          $edges: (actor:`%s`)-[:P1344]->(event),
           $edges: (event)-[:P00_venice_from_sentence]->(node),
-          $edges: (node)-[:P31]->(:`Q00_venice_sentence`),
           $edges: (node)-[:P585]->(datetime),
           $edges: (node)-[msf1:P1552]->(:Q00_authorityvirtue),
           $qualifiers: (msf1)-[]->(msf1_score),
