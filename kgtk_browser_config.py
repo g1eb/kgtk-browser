@@ -475,7 +475,6 @@ def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(node):
         CREATE INDEX "graph_2_node2upper_idx" ON graph_2 ("node2;upper");
         ANALYZE "graph_2_node2upper_idx";
         """,
-        name='RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE',
         inputs=('edges', 'qualifiers'),
         maxcache=MAX_CACHE_SIZE * 10,
         match='''
