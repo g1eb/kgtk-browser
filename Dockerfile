@@ -1,4 +1,4 @@
-# A dockerfile for running the t2wml backend
+# A dockerfile for running the kgtk-browser
 FROM python:3.7-stretch
 
 RUN apt-get update
