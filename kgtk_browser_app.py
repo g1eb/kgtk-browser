@@ -51,8 +51,8 @@ from kgtk.value.kgtkvalue import KgtkValue, KgtkValueFields
 ### Flask application
 
 app = flask.Flask(__name__,
-                  static_url_path='',
-                  static_folder='web/static',
+                  static_url_path='/browser',
+                  static_folder='app/build',
                   template_folder='web/templates')
 app.config.from_envvar('KGTK_BROWSER_CONFIG')
 
@@ -79,6 +79,29 @@ DEFAULT_QUERY_LIMIT: int = 300000
 DEFAULT_QUAL_QUERY_LIMIT: int = 300000
 DEFAULT_VERBOSE: bool = False
 
+
+# List the properties in the order that you want them to appear.  All unlisted
+# properties will appear after these.
+rb_property_priority_list: typing.List[str] = [
+    "P31", # instance of
+    "P279", # subclass of
+    "P21", # sex or gender
+    "P2561*", # name
+    "P138", # named after
+    "P580*", # start time
+    "P582*", # end time
+    "P509", # cause of death
+    "P1196", # manner of death
+    "P20", # place of death
+    "P1038*", # relative
+    "P3342*", # significant person
+]
+
+rb_qualifier_priority_list: typing.List[str] = [
+    "P585", # point in time
+    "P580", # start time
+    "P582", # end time
+]
 
 app.config['SERVICE_PREFIX'] = app.config.get('SERVICE_PREFIX', DEFAULT_SERVICE_PREFIX)
 app.config['DEFAULT_LANGUAGE'] = app.config.get('DEFAULT_LANGUAGE', DEFAULT_LANGUAGE)
@@ -130,14 +153,13 @@ def get_info():
     return flask.jsonify(info), 200
 
 
-# revised browser support:
-
-@app.route('/kb', methods=['GET'])
-def rb_get_kb():
+@app.route('/browser', methods=['GET'])
+@app.route('/browser/<string:node>', methods=['GET'])
+def rb_get_kb(node=None):
     """This is the basic entrypoint for starting the KGTK browser.
        It sends the initial HTML file, "kb.html".
     """
-    return flask.send_from_directory('web/static', 'kb.html')
+    return flask.send_from_directory('app/build', 'index.html')
 
 def rb_is_true(value: str)->bool:
     """String to bool conversion function for use with args.get(...).
@@ -918,23 +940,6 @@ def rb_build_gallery(item_edges: typing.List[typing.List[str]],
     return gallery
 
 
-# List the properties in the order that you want them to appear.  All unlisted
-# properties will appear after these.
-rb_property_priority_list: typing.List[str] = [
-    "P31", # instance of
-    "P279", # subclass of
-    "P21", # sex or gender
-    "P2561*", # name
-    "P138", # named after
-    "P580*", # start time
-    "P582*", # end time
-    "P509", # cause of death
-    "P1196", # manner of death
-    "P20", # place of death
-    "P1038*", # relative
-    "P3342*", # significant person
-]
-
 rb_property_priority_map: typing.Optional[typing.Mapping[str, int]] = None
 
 def rb_scan_property_list(initial_priority_map: typing.Mapping[str, int],
@@ -1056,12 +1061,6 @@ def rb_build_sorted_item_edges(item_edges: typing.List[typing.List[str]])->typin
         sorted_item_edges.append(keyed_item_edges[item_edge_key])
 
     return sorted_item_edges
-
-rb_qualifier_priority_list: typing.List[str] = [
-    "P585", # point in time
-    "P580", # start time
-    "P582", # end time
-]
 
 rb_qualifier_priority_map: typing.Mapping[str, int] = { val: idx for idx, val in enumerate(rb_qualifier_priority_list) }
 

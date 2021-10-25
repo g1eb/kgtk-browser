@@ -6,7 +6,7 @@ import kgtk.kypher.api as kapi
 ### Basic configuration section:
 
 VERSION               = '0.0.1'
-GRAPH_ID              = 'knowledge-graph'
+GRAPH_ID              = 'Venice'
 GRAPH_CACHE           = '/data/database/venice.sqlite3.db'
 LOG_LEVEL             = 1
 INDEX_MODE            = 'auto'
@@ -33,6 +33,8 @@ KG_IMAGES_LABEL       = 'P18'
 KG_FANOUTS_LABEL      = 'count_distinct_properties'
 KG_DATATYPES_LABEL     = 'datatype'
 
+# Data server limits
+VALUELIST_MAX_LEN: int = 100
 
 ### Query configuration section:
 

@@ -15,6 +15,7 @@ COPY kgtk_browser_app.py /src/
 COPY browser/backend/ /src/browser/backend/
 COPY post_deploy.sh /src/
 COPY venice/ /src/venice/
+COPY app/ /src/app/
 
 ARG FLASK_ENV=production
 ENV FLASK_ENV=$FLASK_ENV
@@ -26,5 +27,3 @@ ARG KGTK_BROWSER_CONFIG=kgtk_browser_config.py
 ENV KGTK_BROWSER_CONFIG=$KGTK_BROWSER_CONFIG
 
 WORKDIR /src
-
-EXPOSE 5006
