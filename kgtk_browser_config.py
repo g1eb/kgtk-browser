@@ -386,27 +386,7 @@ RB_NODES_WITH_UPPER_LABELS_STARTING_WITH_QUERY = _api.get_query(
 
 RB_GET_MORAL_FOUNDATIONS_WITH_P585 = _api.get_query(
     doc="""
-    Create the Kypher query used by 'BrowserBackend.rb_get_nodes_with_labels_starting_with()'.
-    Given parameters 'LABEL' (which should end with '.*') and 'LANG' retrieve labels for 'LABEL' in
-    the specified language (using 'any' for 'LANG' retrieves all labels).
-    Return 'node1', 'node_label' pairs as the result.
-    Limit the number of return pairs to LIMIT.
-
-    The output from this query is unordered, due to poor perfromance when
-    there are a large number of matches.
-
-    This query implements a case-insensitive search by matching against the
-    'node2;upper' column, which has the 'node' column in the label graph
-    ('graph_2') translated to upper case.  'node2;upper' may be created with
-    `kgtk calc` or `kgtk query`, or with the following SQL:
-
-    alter table graph_2 add column "node2;upper" text;
-    update graph_2 set "node2;upper" = upper(node2);
-
-    For proper performance, the "node2;upper" column in the label graph must be indexed:
-
-    CREATE INDEX "graph_2_node2upper_idx" ON graph_2 ("node2;upper");
-    ANALYZE "graph_2_node2upper_idx";
+    Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585()'.
     """,
     name='RB_GET_MORAL_FOUNDATIONS_WITH_P585',
     inputs=('edges', 'qualifiers'),
@@ -455,27 +435,7 @@ RB_GET_MORAL_FOUNDATIONS_WITH_P585 = _api.get_query(
 def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(node):
     return _api.get_query(
         doc="""
-        Create the Kypher query used by 'BrowserBackend.rb_get_nodes_with_labels_starting_with()'.
-        Given parameters 'LABEL' (which should end with '.*') and 'LANG' retrieve labels for 'LABEL' in
-        the specified language (using 'any' for 'LANG' retrieves all labels).
-        Return 'node1', 'node_label' pairs as the result.
-        Limit the number of return pairs to LIMIT.
-
-        The output from this query is unordered, due to poor perfromance when
-        there are a large number of matches.
-
-        This query implements a case-insensitive search by matching against the
-        'node2;upper' column, which has the 'node' column in the label graph
-        ('graph_2') translated to upper case.  'node2;upper' may be created with
-        `kgtk calc` or `kgtk query`, or with the following SQL:
-
-        alter table graph_2 add column "node2;upper" text;
-        update graph_2 set "node2;upper" = upper(node2);
-
-        For proper performance, the "node2;upper" column in the label graph must be indexed:
-
-        CREATE INDEX "graph_2_node2upper_idx" ON graph_2 ("node2;upper");
-        ANALYZE "graph_2_node2upper_idx";
+        Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585_for_node()'.
         """,
         inputs=('edges', 'qualifiers'),
         maxcache=MAX_CACHE_SIZE * 10,
@@ -523,27 +483,7 @@ def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(node):
 
 RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585 = _api.get_query(
     doc="""
-    Create the Kypher query used by 'BrowserBackend.rb_get_nodes_with_labels_starting_with()'.
-    Given parameters 'LABEL' (which should end with '.*') and 'LANG' retrieve labels for 'LABEL' in
-    the specified language (using 'any' for 'LANG' retrieves all labels).
-    Return 'node1', 'node_label' pairs as the result.
-    Limit the number of return pairs to LIMIT.
-
-    The output from this query is unordered, due to poor perfromance when
-    there are a large number of matches.
-
-    This query implements a case-insensitive search by matching against the
-    'node2;upper' column, which has the 'node' column in the label graph
-    ('graph_2') translated to upper case.  'node2;upper' may be created with
-    `kgtk calc` or `kgtk query`, or with the following SQL:
-
-    alter table graph_2 add column "node2;upper" text;
-    update graph_2 set "node2;upper" = upper(node2);
-
-    For proper performance, the "node2;upper" column in the label graph must be indexed:
-
-    CREATE INDEX "graph_2_node2upper_idx" ON graph_2 ("node2;upper");
-    ANALYZE "graph_2_node2upper_idx";
+    Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_and_concreteness_with_p585()'.
     """,
     name='RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585',
     inputs=('edges', 'qualifiers'),
