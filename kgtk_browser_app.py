@@ -23,6 +23,19 @@ import browser.backend.kypher as kybe
 from kgtk.kgtkformat import KgtkFormat
 from kgtk.value.kgtkvalue import KgtkValue, KgtkValueFields
 
+# map moral foundation Qnode ids to labels
+moral_foundations_node_mapping = {
+    'Q00_authorityvice': 'authority/vice',
+    'Q00_authorityvirtue': 'authority/virtue',
+    'Q00_fairnessvice': 'fairness/vice',
+    'Q00_fairnessvirtue': 'fairness/virtue',
+    'Q00_harmvice': 'harm/vice',
+    'Q00_harmvirtue': 'harm/virtue',
+    'Q00_ingroupvice': 'ingroup/vice',
+    'Q00_ingroupvirtue': 'ingroup/virtue',
+    'Q00_purityvice': 'purity/vice',
+    'Q00_purityvirtue': 'purity/virtue',
+}
 
 # How to run for local-system access:
 # > export FLASK_APP=kgtk_browser_app.py
@@ -1988,7 +2001,7 @@ def get_mf_scores_by_date():
     debug = args.get("debug", default=False, type=rb_is_true)
     verbose = args.get("verbose", default=False, type=rb_is_true)
     match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
-    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=100000, type=int)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
     match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
@@ -1998,7 +2011,6 @@ def get_mf_scores_by_date():
                 start = datetime.datetime.now()
 
             matches = []
-            items_seen: typing.Set[str] = set()
 
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585(lang=lang,
@@ -2008,32 +2020,42 @@ def get_mf_scores_by_date():
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
 
-                for result in rb_sort_query_results(results):
-                    event_id = result[0]
-                    if event_id in items_seen:
-                        continue
-                    items_seen.add(event_id)
+                results_grouped_by_sentence = {}
+                for result in results:
+                    sentence_id = result[0]
 
-                    datetime_str = result[1]
-                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                    datetime_match = re.match(datetime_pattern, result[1])[1]
+                    # add empty result obj if it is not in the set already
+                    if sentence_id not in results_grouped_by_sentence:
+                        results_grouped_by_sentence[sentence_id] = {}
 
-                    matches.append(
-                        {
-                            "id": event_id,
-                            "datetime": datetime_match,
-                            "authority/virtue": round(float(result[2]), 3),
-                            "authority/vice": round(float(result[3]), 3),
-                            "fairness/virtue": round(float(result[4]), 3),
-                            "fairness/vice": round(float(result[5]), 3),
-                            "harm/virtue": round(float(result[6]), 3),
-                            "harm/vice": round(float(result[7]), 3),
-                            "ingroup/virtue": round(float(result[8]), 3),
-                            "ingroup/vice": round(float(result[9]), 3),
-                            "purity/virtue": round(float(result[10]), 3),
-                            "purity/vice": round(float(result[11]), 3),
-                        }
-                    )
+                    # clean up datetime str and add it to the result obj
+                    if 'datetime' not in results_grouped_by_sentence[sentence_id]:
+                        datetime_str = result[1]
+                        datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                        datetime_match = re.match(datetime_pattern, result[1])[1]
+                        results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
+
+                    # get the correct key/label for the moral foundation score
+                    mf_key = moral_foundations_node_mapping[result[3]]
+                    if mf_key not in results_grouped_by_sentence[sentence_id]:
+                        mf_score = float(result[4])
+                        results_grouped_by_sentence[sentence_id][mf_key] = mf_score
+
+                for sentence_id, values in results_grouped_by_sentence.items():
+                    matches.append({
+                        "id": sentence_id,
+                        "datetime": values['datetime'],
+                        "authority/virtue": values["authority/virtue"],
+                        "authority/vice": values["authority/vice"],
+                        "fairness/virtue": values["fairness/virtue"],
+                        "fairness/vice": values["fairness/vice"],
+                        "harm/virtue": values["harm/virtue"],
+                        "harm/vice": values["harm/vice"],
+                        "ingroup/virtue": values["ingroup/virtue"],
+                        "ingroup/vice": values["ingroup/vice"],
+                        "purity/virtue": values["purity/virtue"],
+                        "purity/vice": values["purity/vice"],
+                    })
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
