@@ -394,13 +394,8 @@ RB_GET_MORAL_FOUNDATIONS_WITH_P585 = _api.get_query(
     match='''
       $edges: (node)-[:P31]->(:Q00_venice_sentence),
       $edges: (node)-[:P585]->(datetime),
-      $edges: (node)-[msf]->(msftype),
+      $edges: (node)-[msf]->(msftype), (msftype)-[:P31]->(:Q1207505),
       $qualifiers: (msf)-[]->(msf_score)
-    ''',
-    where='''
-        msftype in ["Q00_authorityvirtue", "Q00_authorityvice", "Q00_fairnessvirtue", "Q00_fairnessvice",
-                    "Q00_harmvirtue", "Q00_harmvice", "Q00_ingroupvirtue", "Q00_ingroupvice",
-                    "Q00_purityvirtue", "Q00_purityvice"]
     ''',
     ret='''
         node,

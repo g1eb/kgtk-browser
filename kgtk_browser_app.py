@@ -24,7 +24,7 @@ from kgtk.kgtkformat import KgtkFormat
 from kgtk.value.kgtkvalue import KgtkValue, KgtkValueFields
 
 # map moral foundation Qnode ids to labels
-moral_foundations_node_mapping = {
+scores_mapping = {
     'Q00_authorityvice': 'authority/vice',
     'Q00_authorityvirtue': 'authority/virtue',
     'Q00_fairnessvice': 'fairness/vice',
@@ -2037,26 +2037,29 @@ def get_mf_scores_by_date():
                         results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
 
                     # get the correct key/label for the moral foundation score
-                    mf_key = moral_foundations_node_mapping[result[3]]
+                    mf_key = scores_mapping[result[3]]
                     if mf_key not in results_grouped_by_sentence[sentence_id]:
                         mf_score = float(result[4])
                         results_grouped_by_sentence[sentence_id][mf_key] = mf_score
 
                 for sentence_id, values in results_grouped_by_sentence.items():
-                    matches.append({
-                        "id": sentence_id,
-                        "datetime": values['datetime'],
-                        "authority/virtue": values["authority/virtue"],
-                        "authority/vice": values["authority/vice"],
-                        "fairness/virtue": values["fairness/virtue"],
-                        "fairness/vice": values["fairness/vice"],
-                        "harm/virtue": values["harm/virtue"],
-                        "harm/vice": values["harm/vice"],
-                        "ingroup/virtue": values["ingroup/virtue"],
-                        "ingroup/vice": values["ingroup/vice"],
-                        "purity/virtue": values["purity/virtue"],
-                        "purity/vice": values["purity/vice"],
-                    })
+                    try:
+                        matches.append({
+                            "id": sentence_id,
+                            "datetime": values['datetime'],
+                            "authority/virtue": values["authority/virtue"],
+                            "authority/vice": values["authority/vice"],
+                            "fairness/virtue": values["fairness/virtue"],
+                            "fairness/vice": values["fairness/vice"],
+                            "harm/virtue": values["harm/virtue"],
+                            "harm/vice": values["harm/vice"],
+                            "ingroup/virtue": values["ingroup/virtue"],
+                            "ingroup/vice": values["ingroup/vice"],
+                            "purity/virtue": values["purity/virtue"],
+                            "purity/vice": values["purity/vice"],
+                        })
+                    except KeyError:
+                        print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
