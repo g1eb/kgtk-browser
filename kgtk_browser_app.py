@@ -35,6 +35,7 @@ moral_foundations_node_mapping = {
     'Q00_ingroupvirtue': 'ingroup/virtue',
     'Q00_purityvice': 'purity/vice',
     'Q00_purityvirtue': 'purity/virtue',
+    'Q00_concreteness': 'concreteness',
 }
 
 # How to run for local-system access:
