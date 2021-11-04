@@ -2107,32 +2107,45 @@ def get_mf_scores_by_date_for_node(node):
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
 
-                for result in rb_sort_query_results(results):
-                    event_id = result[0]
-                    if event_id in items_seen:
-                        continue
-                    items_seen.add(event_id)
+                results_grouped_by_sentence = {}
+                for result in results:
+                    sentence_id = result[0]
 
-                    datetime_str = result[1]
-                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                    datetime_match = re.match(datetime_pattern, result[1])[1]
+                    # add empty result obj if it is not in the set already
+                    if sentence_id not in results_grouped_by_sentence:
+                        results_grouped_by_sentence[sentence_id] = {}
 
-                    matches.append(
-                        {
-                            "id": event_id,
-                            "datetime": datetime_match,
-                            "authority/virtue": round(float(result[2]), 3),
-                            "authority/vice": round(float(result[3]), 3),
-                            "fairness/virtue": round(float(result[4]), 3),
-                            "fairness/vice": round(float(result[5]), 3),
-                            "harm/virtue": round(float(result[6]), 3),
-                            "harm/vice": round(float(result[7]), 3),
-                            "ingroup/virtue": round(float(result[8]), 3),
-                            "ingroup/vice": round(float(result[9]), 3),
-                            "purity/virtue": round(float(result[10]), 3),
-                            "purity/vice": round(float(result[11]), 3),
-                        }
-                    )
+                    # clean up datetime str and add it to the result obj
+                    if 'datetime' not in results_grouped_by_sentence[sentence_id]:
+                        datetime_str = result[1]
+                        datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                        datetime_match = re.match(datetime_pattern, result[1])[1]
+                        results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
+
+                    # get the correct key/label for the moral foundation score
+                    mf_key = scores_mapping[result[3]]
+                    if mf_key not in results_grouped_by_sentence[sentence_id]:
+                        mf_score = float(result[4])
+                        results_grouped_by_sentence[sentence_id][mf_key] = mf_score
+
+                for sentence_id, values in results_grouped_by_sentence.items():
+                    try:
+                        matches.append({
+                            "id": sentence_id,
+                            "datetime": values['datetime'],
+                            "authority/virtue": values["authority/virtue"],
+                            "authority/vice": values["authority/vice"],
+                            "fairness/virtue": values["fairness/virtue"],
+                            "fairness/vice": values["fairness/vice"],
+                            "harm/virtue": values["harm/virtue"],
+                            "harm/vice": values["harm/vice"],
+                            "ingroup/virtue": values["ingroup/virtue"],
+                            "ingroup/vice": values["ingroup/vice"],
+                            "purity/virtue": values["purity/virtue"],
+                            "purity/vice": values["purity/vice"],
+                        })
+                    except KeyError:
+                        print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))

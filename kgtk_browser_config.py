@@ -392,10 +392,10 @@ RB_GET_MORAL_FOUNDATIONS_WITH_P585 = _api.get_query(
     inputs=('edges', 'qualifiers'),
     maxcache=MAX_CACHE_SIZE * 10,
     match='''
-      $edges: (node)-[:P31]->(:Q00_venice_sentence),
-      $edges: (node)-[:P585]->(datetime),
-      $edges: (node)-[msf]->(msftype), (msftype)-[:P31]->(:Q1207505),
-      $qualifiers: (msf)-[]->(msf_score)
+        $edges: (node)-[:P31]->(:Q00_venice_sentence),
+        $edges: (node)-[:P585]->(datetime),
+        $edges: (node)-[msf]->(msftype), (msftype)-[:P31]->(:Q1207505),
+        $qualifiers: (msf)-[]->(msf_score)
     ''',
     ret='''
         node,
@@ -407,54 +407,34 @@ RB_GET_MORAL_FOUNDATIONS_WITH_P585 = _api.get_query(
     limit= "$LIMIT"
 )
 
-def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(node):
-    return _api.get_query(
-        doc="""
-        Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585_for_node()'.
-        """,
-        inputs=('edges', 'qualifiers'),
-        maxcache=MAX_CACHE_SIZE * 10,
-        match='''
-          $edges: (actor:`%s`)-[:P1344]->(event),
-          $edges: (event)-[:P00_venice_from_sentence]->(node),
-          $edges: (node)-[:P585]->(datetime),
-          $edges: (node)-[msf1:P1552]->(:Q00_authorityvirtue),
-          $qualifiers: (msf1)-[]->(msf1_score),
-          $edges: (node)-[msf2:P1552]->(:Q00_authorityvice),
-          $qualifiers: (msf2)-[]->(msf2_score),
-          $edges: (node)-[msf3:P1552]->(:Q00_fairnessvirtue),
-          $qualifiers: (msf3)-[]->(msf3_score),
-          $edges: (node)-[msf4:P1552]->(:Q00_fairnessvice),
-          $qualifiers: (msf4)-[]->(msf4_score),
-          $edges: (node)-[msf5:P1552]->(:Q00_harmvirtue),
-          $qualifiers: (msf5)-[]->(msf5_score),
-          $edges: (node)-[msf6:P1552]->(:Q00_harmvice),
-          $qualifiers: (msf6)-[]->(msf6_score),
-          $edges: (node)-[msf7:P1552]->(:Q00_ingroupvirtue),
-          $qualifiers: (msf7)-[]->(msf7_score),
-          $edges: (node)-[msf8:P1552]->(:Q00_ingroupvice),
-          $qualifiers: (msf8)-[]->(msf8_score),
-          $edges: (node)-[msf9:P1552]->(:Q00_purityvirtue),
-          $qualifiers: (msf9)-[]->(msf9_score),
-          $edges: (node)-[msf10:P1552]->(:Q00_purityvice),
-          $qualifiers: (msf10)-[]->(msf10_score)
-        ''' % node,
-        ret='''
-            node,
-            datetime,
-            msf1_score,
-            msf2_score,
-            msf3_score,
-            msf4_score,
-            msf5_score,
-            msf6_score,
-            msf7_score,
-            msf8_score,
-            msf9_score,
-            msf10_score
-        ''',
-        limit= "$LIMIT"
-    )
+RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE = _api.get_query(
+    doc="""
+    Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585_for_node()'.
+    """,
+    name='RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE',
+    inputs=('edges', 'qualifiers'),
+    maxcache=MAX_CACHE_SIZE * 10,
+    match='''
+        $edges: (actor)-[:P1344]->(event),
+        $edges: (event)-[:P00_venice_from_sentence]->(node),
+        $edges: (node)-[:P585]->(datetime),
+        $edges: (node)-[msf]->(msftype),
+        $qualifiers: (msf)-[]->(msf_score)
+      ''',
+      where='''
+         msftype in ["Q00_authorityvirtue", "Q00_authorityvice", "Q00_fairnessvirtue", "Q00_fairnessvice",
+                     "Q00_harmvirtue", "Q00_harmvice", "Q00_ingroupvirtue", "Q00_ingroupvice",
+                     "Q00_purityvirtue", "Q00_purityvice"]
+         and actor=$NODE
+      ''',
+      ret='''
+          node,
+          datetime,
+          msf,
+          msftype,
+          msf_score
+      '''
+)
 
 RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585 = _api.get_query(
     doc="""

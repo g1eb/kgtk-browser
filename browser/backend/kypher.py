@@ -456,9 +456,9 @@ class BrowserBackend(object):
         may or may not be case-insensitive. The search must be fast.
         """
 
-        query = self.get_config('RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE')(node)
+        query = self.get_config('RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE')
 
-        return self.execute_query(query, LIMIT=limit, fmt=fmt)
+        return self.execute_query(query, NODE=node, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
     def rb_get_moral_foundations_and_concreteness_with_p585(self, limit: int = 20, lang=None, fmt=None, ignore_case: bool = False):
