@@ -20,14 +20,14 @@ rm -f ${GRAPH_CACHE}
 # in this order, then the sqlite3 commands that follow may execute on
 # the wrong data.
 
-# *** Load and index graph_1: claims. ***
+# *** Load graph_1: claims. ***
 echo -e "\n*** Load and index graph_1: claims. ***"
 time kgtk ${KGTK_OPTIONS} query \
      -i ${GRAPHS}/claims.tsv.gz \
      --graph-cache ${GRAPH_CACHE} \
      --as claims --limit 1
 
-# *** Load and index graph_2: labels. ***
+# *** Load graph_2: labels. ***
 echo -e "\n*** Load and index graph_2: labels. ***"
 time kgtk ${KGTK_OPTIONS} query \
      -i ${GRAPHS}/labels.tsv.gz \
