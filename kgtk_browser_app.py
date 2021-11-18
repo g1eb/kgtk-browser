@@ -2057,7 +2057,6 @@ def get_events_and_scores_by_date():
                         results_grouped_by_date[date].append({
                             "id": sentence_id,
                             "sentence": values['sentence'],
-                            "datetime": values['datetime'],
                             "authority/virtue": values["authority/virtue"],
                             "authority/vice": values["authority/vice"],
                             "fairness/virtue": values["fairness/virtue"],
