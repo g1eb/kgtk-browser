@@ -2011,8 +2011,6 @@ def get_events_and_scores_by_date():
             if debug:
                 start = datetime.datetime.now()
 
-            matches = []
-
             if match_label_prefixes:
                 results = backend.rb_get_events_and_scores_by_date(lang=lang,
                                                                     ignore_case=match_label_ignore_case,
@@ -2049,12 +2047,16 @@ def get_events_and_scores_by_date():
                         mf_score = float(result[5])
                         results_grouped_by_sentence[sentence_id][mf_key] = mf_score
 
+                results_grouped_by_date = {}
                 for sentence_id, values in results_grouped_by_sentence.items():
+                    date = values['datetime']
+                    if date not in results_grouped_by_date:
+                        results_grouped_by_date[date] = []
+
                     try:
-                        matches.append({
+                        results_grouped_by_date[date].append({
                             "id": sentence_id,
                             "sentence": values['sentence'],
-                            "datetime": values['datetime'],
                             "authority/virtue": values["authority/virtue"],
                             "authority/vice": values["authority/vice"],
                             "fairness/virtue": values["fairness/virtue"],
@@ -2071,15 +2073,8 @@ def get_events_and_scores_by_date():
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
-                start = datetime.datetime.now()
 
-            df = pd.DataFrame(matches)
-            out_df = df.groupby('datetime').sum()
-
-            if debug:
-                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
-
-            return flask.jsonify(out_df.to_dict()), 200
+            return flask.jsonify(results_grouped_by_date), 200
     except Exception as e:
         print('ERROR: ' + str(e))
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
