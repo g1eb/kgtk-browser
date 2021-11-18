@@ -389,16 +389,18 @@ RB_GET_EVENTS_AND_SCORES_BY_DATE = _api.get_query(
     Create the Kypher query used by 'BrowserBackend.rb_get_events_and_scores_by_date()'.
     """,
     name='RB_GET_EVENTS_AND_SCORES_BY_DATE',
-    inputs=('edges', 'qualifiers'),
+    inputs=('edges', 'labels', 'qualifiers'),
     maxcache=MAX_CACHE_SIZE * 10,
     match='''
         $edges: (node)-[:P31]->(:Q00_venice_sentence),
+        $labels: (node)-[:label]->(sentence),
         $edges: (node)-[:P585]->(datetime),
         $edges: (node)-[msf]->(msftype), (msftype)-[:P31]->(:Q1207505),
         $qualifiers: (msf)-[]->(msf_score)
     ''',
     ret='''
         node,
+        sentence,
         datetime,
         msf,
         msftype,

@@ -2029,23 +2029,31 @@ def get_events_and_scores_by_date():
                     if sentence_id not in results_grouped_by_sentence:
                         results_grouped_by_sentence[sentence_id] = {}
 
+                    # clean up the sentence string and add it to the result obj
+                    if 'sentence' not in results_grouped_by_sentence[sentence_id]:
+                        sentence_str = result[1]
+                        sentence_pattern = re.compile('^\'(.*)\'\@en$')
+                        sentence_match = re.match(sentence_pattern, sentence_str)[1]
+                        results_grouped_by_sentence[sentence_id]['sentence'] = sentence_match
+
                     # clean up datetime str and add it to the result obj
                     if 'datetime' not in results_grouped_by_sentence[sentence_id]:
-                        datetime_str = result[1]
+                        datetime_str = result[2]
                         datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                        datetime_match = re.match(datetime_pattern, result[1])[1]
+                        datetime_match = re.match(datetime_pattern, datetime_str)[1]
                         results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
 
                     # get the correct key/label for the moral foundation score
-                    mf_key = scores_mapping[result[3]]
+                    mf_key = scores_mapping[result[4]]
                     if mf_key not in results_grouped_by_sentence[sentence_id]:
-                        mf_score = float(result[4])
+                        mf_score = float(result[5])
                         results_grouped_by_sentence[sentence_id][mf_key] = mf_score
 
                 for sentence_id, values in results_grouped_by_sentence.items():
                     try:
                         matches.append({
                             "id": sentence_id,
+                            "sentence": values['sentence'],
                             "datetime": values['datetime'],
                             "authority/virtue": values["authority/virtue"],
                             "authority/vice": values["authority/vice"],
