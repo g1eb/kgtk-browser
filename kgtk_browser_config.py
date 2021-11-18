@@ -384,6 +384,29 @@ RB_NODES_WITH_UPPER_LABELS_STARTING_WITH_QUERY = _api.get_query(
     limit= "$LIMIT"
 )
 
+RB_GET_EVENTS_AND_SCORES_BY_DATE = _api.get_query(
+    doc="""
+    Create the Kypher query used by 'BrowserBackend.rb_get_events_and_scores_by_date()'.
+    """,
+    name='RB_GET_EVENTS_AND_SCORES_BY_DATE',
+    inputs=('edges', 'qualifiers'),
+    maxcache=MAX_CACHE_SIZE * 10,
+    match='''
+        $edges: (node)-[:P31]->(:Q00_venice_sentence),
+        $edges: (node)-[:P585]->(datetime),
+        $edges: (node)-[msf]->(msftype), (msftype)-[:P31]->(:Q1207505),
+        $qualifiers: (msf)-[]->(msf_score)
+    ''',
+    ret='''
+        node,
+        datetime,
+        msf,
+        msftype,
+        msf_score
+    ''',
+    limit= "$LIMIT"
+)
+
 RB_GET_MORAL_FOUNDATIONS_WITH_P585 = _api.get_query(
     doc="""
     Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585()'.

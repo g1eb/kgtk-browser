@@ -1993,6 +1993,90 @@ def get_all_node_data():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/get_events_and_scores_by_date', methods=['GET'])
+def get_events_and_scores_by_date():
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend(app) as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            matches = []
+
+            if match_label_prefixes:
+                results = backend.rb_get_events_and_scores_by_date(lang=lang,
+                                                                    ignore_case=match_label_ignore_case,
+                                                                    limit=match_label_prefixes_limit)
+
+                if verbose:
+                    print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+                results_grouped_by_sentence = {}
+                for result in results:
+                    sentence_id = result[0]
+
+                    # add empty result obj if it is not in the set already
+                    if sentence_id not in results_grouped_by_sentence:
+                        results_grouped_by_sentence[sentence_id] = {}
+
+                    # clean up datetime str and add it to the result obj
+                    if 'datetime' not in results_grouped_by_sentence[sentence_id]:
+                        datetime_str = result[1]
+                        datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                        datetime_match = re.match(datetime_pattern, result[1])[1]
+                        results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
+
+                    # get the correct key/label for the moral foundation score
+                    mf_key = scores_mapping[result[3]]
+                    if mf_key not in results_grouped_by_sentence[sentence_id]:
+                        mf_score = float(result[4])
+                        results_grouped_by_sentence[sentence_id][mf_key] = mf_score
+
+                for sentence_id, values in results_grouped_by_sentence.items():
+                    try:
+                        matches.append({
+                            "id": sentence_id,
+                            "datetime": values['datetime'],
+                            "authority/virtue": values["authority/virtue"],
+                            "authority/vice": values["authority/vice"],
+                            "fairness/virtue": values["fairness/virtue"],
+                            "fairness/vice": values["fairness/vice"],
+                            "harm/virtue": values["harm/virtue"],
+                            "harm/vice": values["harm/vice"],
+                            "ingroup/virtue": values["ingroup/virtue"],
+                            "ingroup/vice": values["ingroup/vice"],
+                            "purity/virtue": values["purity/virtue"],
+                            "purity/vice": values["purity/vice"],
+                        })
+                    except KeyError:
+                        print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+                start = datetime.datetime.now()
+
+            df = pd.DataFrame(matches)
+            out_df = df.groupby('datetime').sum()
+
+            if debug:
+                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(out_df.to_dict()), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
 @app.route('/kb/get_mf_scores_by_date', methods=['GET'])
 def get_mf_scores_by_date():
 
