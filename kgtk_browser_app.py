@@ -2045,7 +2045,7 @@ def get_events_and_scores_by_date():
                     mf_key = scores_mapping[result[4]]
                     if mf_key not in results_grouped_by_sentence[sentence_id]:
                         mf_score = float(result[5])
-                        results_grouped_by_sentence[sentence_id][mf_key] = mf_score
+                        results_grouped_by_sentence[sentence_id][mf_key] = round(mf_score, 3)
 
                 results_grouped_by_date = {}
                 for sentence_id, values in results_grouped_by_sentence.items():
