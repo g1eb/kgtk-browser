@@ -2057,19 +2057,27 @@ def get_events_and_scores_by_date():
                         results_grouped_by_date[date].append({
                             "id": sentence_id,
                             "sentence": values['sentence'],
-                            "authority/virtue": values["authority/virtue"],
-                            "authority/vice": values["authority/vice"],
-                            "fairness/virtue": values["fairness/virtue"],
-                            "fairness/vice": values["fairness/vice"],
-                            "harm/virtue": values["harm/virtue"],
-                            "harm/vice": values["harm/vice"],
-                            "ingroup/virtue": values["ingroup/virtue"],
-                            "ingroup/vice": values["ingroup/vice"],
-                            "purity/virtue": values["purity/virtue"],
-                            "purity/vice": values["purity/vice"],
+                            "scores": {
+                                "authority/virtue": values["authority/virtue"],
+                                "authority/vice": values["authority/vice"],
+                                "fairness/virtue": values["fairness/virtue"],
+                                "fairness/vice": values["fairness/vice"],
+                                "harm/virtue": values["harm/virtue"],
+                                "harm/vice": values["harm/vice"],
+                                "ingroup/virtue": values["ingroup/virtue"],
+                                "ingroup/vice": values["ingroup/vice"],
+                                "purity/virtue": values["purity/virtue"],
+                                "purity/vice": values["purity/vice"],
+                            },
                         })
                     except KeyError:
                         print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
+
+                # calculate the max activation moral foundation for each event
+                for date, events in results_grouped_by_date.items():
+                    for event in events:
+                        scores = event['scores']
+                        event['max_score'] = max(scores, key=scores.get)
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
