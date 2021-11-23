@@ -2077,15 +2077,7 @@ def get_events_and_scores_by_date():
                 for date, events in results_grouped_by_date.items():
                     for event in events:
                         scores = event['scores']
-                        max_indices = [
-                            index for index, score
-                            in enumerate(scores)
-                            if score == max(scores)
-                        ]
-                        if len(max_indices) > 1:
-                            event['max_score'] = None
-                        else:
-                            event['max_score'] = max(scores, key=scores.get)
+                        event['max_score'] = max(scores, key=scores.get)
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
