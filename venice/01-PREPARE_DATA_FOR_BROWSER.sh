@@ -43,7 +43,9 @@ time kgtk ${KGTK_OPTIONS} reorder-columns ${MGZIP_OPTIONS} \
 #    descriptions
 #    labels
 #    metadata (datatypes)
-#    claims and qualifiers
+#    claims
+#    qualifiers
+#    pagerank
 #
 # Also split out "/vertex_in_degree" and "vertex_out_degree" records,
 # they shouldn't be there.
