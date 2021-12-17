@@ -50,13 +50,13 @@ echo -e "\n*** Split the unified input file into parts. ***"
 time kgtk ${KGTK_OPTIONS} filter ${MGZIP_OPTIONS} \
      -i ${WORKING_FOLDER}/all.trimmed.tsv.gz \
      -p ';alias;' \
-     -o ${WORKING_FOLDER}/aliases.tsv.gz \
+     -o ${WORKING_FOLDER}/aliases.en.tsv.gz \
      -p ';description;' \
-     -o ${WORKING_FOLDER}/descriptions.tsv.gz \
+     -o ${WORKING_FOLDER}/descriptions.en.tsv.gz \
      -p ';label;' \
-     -o ${WORKING_FOLDER}/labels.tsv.gz \
+     -o ${WORKING_FOLDER}/labels.en.tsv.gz \
      -p ';count_distinct_properties,datatype;' \
-     -o ${WORKING_FOLDER}/metadata.tsv.gz \
+     -o ${WORKING_FOLDER}/metadata.types.tsv.gz \
      -p ';vertex_in_degree;' \
      -o ${WORKING_FOLDER}/vertex_in_degree.tsv \
      -p ';vertex_out_degree;' \
@@ -84,7 +84,7 @@ time kgtk ${KGTK_OPTIONS} ifexists ${MGZIP_OPTIONS} \
      --input-keys node1 \
      --filter-file ${WORKING_FOLDER}/claims_and_quals.sort-by-id.tsv.gz \
      --filter-keys id \
-     --output-file ${WORKING_FOLDER}/quals.tsv.gz \
+     --output-file ${WORKING_FOLDER}/qualifiers.tsv.gz \
      --reject-file ${WORKING_FOLDER}/claims.tsv.gz \
      --presorted --verbose
 
@@ -92,7 +92,7 @@ time kgtk ${KGTK_OPTIONS} ifexists ${MGZIP_OPTIONS} \
 echo -e "\n*** Ensure that the qualifier edges contain ID values. ***"
 time kgtk ${KGTK_OPTIONS} add-id ${MGZIP_OPTIONS} --verbose \
      --id-prefix EQ \
-     -i ${WORKING_FOLDER}/quals.tsv.gz \
+     -i ${WORKING_FOLDER}/qualifiers.tsv.gz \
      -o ${WORKING_FOLDER}/quals.with-ids.tsv.gz
 
 # **************************************************************\
@@ -102,7 +102,7 @@ time kgtk ${KGTK_OPTIONS} add-id ${MGZIP_OPTIONS} --verbose \
 echo -e "\n*** Ensure that the aliases do not contain gross duplicates: sorting... ***"
 time kgtk ${KGTK_OPTIONS} sort ${GZIP_CMD} ${MGZIP_OPTIONS} \
      --columns node1 label node2 id \
-     -i ${WORKING_FOLDER}/aliases.tsv.gz \
+     -i ${WORKING_FOLDER}/aliases.en.tsv.gz \
      -o ${WORKING_FOLDER}/aliases.sorted.tsv.gz
 
 echo -e "\n*** Ensure that the aliases do not contain gross duplicates: deduplicating... ***"
@@ -111,25 +111,25 @@ time kgtk ${KGTK_OPTIONS} deduplicate ${MGZIP_OPTIONS} \
      --columns node1 label node2 \
      --keep-first id \
      -i ${WORKING_FOLDER}/aliases.sorted.tsv.gz \
-     -o ${GRAPHS}/aliases.tsv.gz
+     -o ${GRAPHS}/aliases.en.tsv.gz
 
 echo -e "\n*** Ensure that the aliases do not contain ID duplicates. ***"
 time kgtk ${KGTK_OPTIONS} unique ${MGZIP_OPTIONS} \
      --column id --min-count 2 --verbose \
-     -i ${GRAPHS}/aliases.tsv.gz \
+     -i ${GRAPHS}/aliases.en.tsv.gz \
      -o ${WORKING_FOLDER}/aliases.duplicate-ids.tsv.gz \
 
 # Present a sample of the records with duplicate ID values:
 time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${WORKING_FOLDER}/aliases.duplicate-ids.tsv.gz \
     / ifexists \
-     -i ${GRAPHS}/aliases.tsv.gz --input-keys id \
+     -i ${GRAPHS}/aliases.en.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
 echo -e "\n*** Ensure that the descriptions do not contain gross duplicates: sorting... ***"
 time kgtk ${KGTK_OPTIONS} sort ${GZIP_CMD} ${MGZIP_OPTIONS} \
      --columns node1 label node2 id \
-     -i ${WORKING_FOLDER}/descriptions.tsv.gz \
+     -i ${WORKING_FOLDER}/descriptions.en.tsv.gz \
      -o ${WORKING_FOLDER}/descriptions.sorted.tsv.gz
 
 echo -e "\n*** Ensure that the descriptions do not contain gross duplicates: deduplicating... ***"
@@ -138,25 +138,25 @@ time kgtk ${KGTK_OPTIONS} deduplicate ${MGZIP_OPTIONS} \
      --columns node1 label node2 \
      --keep-first id \
      -i ${WORKING_FOLDER}/descriptions.sorted.tsv.gz \
-     -o ${GRAPHS}/descriptions.tsv.gz
+     -o ${GRAPHS}/descriptions.en.tsv.gz
 
 echo -e "\n*** Ensure that the descriptions do not contain ID duplicates. ***"
 time kgtk ${KGTK_OPTIONS} unique ${MGZIP_OPTIONS} \
      --column id --min-count 2 --verbose \
-     -i ${GRAPHS}/descriptions.tsv.gz \
+     -i ${GRAPHS}/descriptions.en.tsv.gz \
      -o ${WORKING_FOLDER}/descriptions.duplicate-ids.tsv.gz \
 
 # Present a sample of the records with duplicate ID values:
 time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${WORKING_FOLDER}/descriptions.duplicate-ids.tsv.gz \
     / ifexists \
-     -i ${GRAPHS}/descriptions.tsv.gz --input-keys id \
+     -i ${GRAPHS}/descriptions.en.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
 echo -e "\n*** Ensure that the labels do not contain gross duplicates: sorting... ***"
 time kgtk ${KGTK_OPTIONS} sort ${GZIP_CMD} ${MGZIP_OPTIONS} \
      --columns node1 label node2 id \
-     -i ${WORKING_FOLDER}/labels.tsv.gz \
+     -i ${WORKING_FOLDER}/labels.en.tsv.gz \
      -o ${WORKING_FOLDER}/labels.sorted.tsv.gz
 
 echo -e "\n*** Ensure that the labels do not contain gross duplicates: deduplicating... ***"
@@ -165,25 +165,25 @@ time kgtk ${KGTK_OPTIONS} deduplicate ${MGZIP_OPTIONS} \
      --columns node1 label node2 \
      --keep-first id \
      -i ${WORKING_FOLDER}/labels.sorted.tsv.gz \
-     -o ${GRAPHS}/labels.tsv.gz
+     -o ${GRAPHS}/labels.en.tsv.gz
 
 echo -e "\n*** Ensure that the labels do not contain ID duplicates. ***"
 time kgtk ${KGTK_OPTIONS} unique ${MGZIP_OPTIONS} \
      --column id --min-count 2 --verbose \
-     -i ${GRAPHS}/labels.tsv.gz \
+     -i ${GRAPHS}/labels.en.tsv.gz \
      -o ${WORKING_FOLDER}/labels.duplicate-ids.tsv.gz \
 
 # Present a sample of the records with duplicate ID values:
 time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${WORKING_FOLDER}/labels.duplicate-ids.tsv.gz \
     / ifexists \
-     -i ${GRAPHS}/labels.tsv.gz --input-keys id \
+     -i ${GRAPHS}/labels.en.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
 echo -e "\n*** Ensure that the metadata do not contain gross duplicates: sorting... ***"
 time kgtk ${KGTK_OPTIONS} sort ${GZIP_CMD} ${MGZIP_OPTIONS} \
      --columns node1 label node2 id \
-     -i ${WORKING_FOLDER}/metadata.tsv.gz \
+     -i ${WORKING_FOLDER}/metadata.types.tsv.gz \
      -o ${WORKING_FOLDER}/metadata.sorted.tsv.gz
 
 echo -e "\n*** Ensure that the metadata do not contain gross duplicates: deduplicating... ***"
@@ -192,19 +192,19 @@ time kgtk ${KGTK_OPTIONS} deduplicate ${MGZIP_OPTIONS} \
      --columns node1 label node2 \
      --keep-first id \
      -i ${WORKING_FOLDER}/metadata.sorted.tsv.gz \
-     -o ${GRAPHS}/metadata.tsv.gz
+     -o ${GRAPHS}/metadata.types.tsv.gz
 
 echo -e "\n*** Ensure that the metadata does not contain ID duplicates. ***"
 time kgtk ${KGTK_OPTIONS} unique ${MGZIP_OPTIONS} \
      --column id --min-count 2 --verbose \
-     -i ${GRAPHS}/metadata.tsv.gz \
+     -i ${GRAPHS}/metadata.types.tsv.gz \
      -o ${WORKING_FOLDER}/metadata.duplicate-ids.tsv.gz \
 
 # Present a sample of the records with duplicate ID values:
 time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${WORKING_FOLDER}/metadata.duplicate-ids.tsv.gz \
     / ifexists \
-     -i ${GRAPHS}/metadata.tsv.gz --input-keys id \
+     -i ${GRAPHS}/metadata.types.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
 echo -e "\n*** Ensure that the claims do not contain gross duplicates: sorting... ***"
@@ -244,19 +244,19 @@ time kgtk ${KGTK_OPTIONS} deduplicate ${MGZIP_OPTIONS} \
      --presorted --report-lists --verbose \
      --columns node1 label node2 id \
      -i ${WORKING_FOLDER}/quals.sorted.tsv.gz \
-     -o ${GRAPHS}/quals.tsv.gz
+     -o ${GRAPHS}/qualifiers.tsv.gz
 
 echo -e "\n*** Ensure that the qualifiers do not contain ID duplicates. ***"
 time kgtk ${KGTK_OPTIONS} unique ${MGZIP_OPTIONS} \
      --column id --min-count 2 --verbose \
-     -i ${GRAPHS}/quals.tsv.gz \
+     -i ${GRAPHS}/qualifiers.tsv.gz \
      -o ${WORKING_FOLDER}/quals.duplicate-ids.tsv.gz \
 
 # Present a sample of the records with duplicate ID values:
 time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${WORKING_FOLDER}/quals.duplicate-ids.tsv.gz \
     / ifexists \
-     -i ${GRAPHS}/quals.tsv.gz --input-keys id \
+     -i ${GRAPHS}/qualifiers.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
 echo -e "\n*** The data files are ready to be loaded into the graph cache. ***"
