@@ -57,7 +57,7 @@ time kgtk ${KGTK_OPTIONS} filter ${MGZIP_OPTIONS} \
      -p ';label;' \
      -o ${WORKING_FOLDER}/labels.en.tsv.gz \
      -p ';count_distinct_properties,datatype;' \
-     -o ${WORKING_FOLDER}/metadata.types.tsv.gz \
+     -o ${WORKING_FOLDER}/metadata.property.datatypes.tsv.gz \
      -p ';vertex_in_degree;' \
      -o ${WORKING_FOLDER}/vertex_in_degree.tsv \
      -p ';vertex_out_degree;' \
@@ -190,7 +190,7 @@ echo -e "\n*** Ensure that the metadata do not contain gross duplicates: sorting
 time kgtk ${KGTK_OPTIONS} sort ${GZIP_CMD} ${MGZIP_OPTIONS} \
      -X "--parallel ${SORT_PARALLEL} --buffer-size ${SORT_BUFFER_SIZE} -T ${SORT_TEMP_FOLDER}" \
      --columns node1 label node2 id \
-     -i ${WORKING_FOLDER}/metadata.types.tsv.gz \
+     -i ${WORKING_FOLDER}/metadata.property.datatypes.tsv.gz \
      -o ${WORKING_FOLDER}/metadata.sorted.tsv.gz
 
 echo -e "\n*** Ensure that the metadata do not contain gross duplicates: deduplicating... ***"
@@ -199,19 +199,19 @@ time kgtk ${KGTK_OPTIONS} deduplicate ${MGZIP_OPTIONS} \
      --columns node1 label node2 \
      --keep-first id \
      -i ${WORKING_FOLDER}/metadata.sorted.tsv.gz \
-     -o ${GRAPHS}/metadata.types.tsv.gz
+     -o ${GRAPHS}/metadata.property.datatypes.tsv.gz
 
 echo -e "\n*** Ensure that the metadata does not contain ID duplicates. ***"
 time kgtk ${KGTK_OPTIONS} unique ${MGZIP_OPTIONS} \
      --column id --min-count 2 --verbose \
-     -i ${GRAPHS}/metadata.types.tsv.gz \
+     -i ${GRAPHS}/metadata.property.datatypes.tsv.gz \
      -o ${WORKING_FOLDER}/metadata.duplicate-ids.tsv.gz \
 
 # Present a sample of the records with duplicate ID values:
 time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${WORKING_FOLDER}/metadata.duplicate-ids.tsv.gz \
     / ifexists \
-     -i ${GRAPHS}/metadata.types.tsv.gz --input-keys id \
+     -i ${GRAPHS}/metadata.property.datatypes.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
 echo -e "\n*** Ensure that the claims do not contain gross duplicates: sorting... ***"
