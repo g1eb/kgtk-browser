@@ -268,4 +268,20 @@ time kgtk ${KGTK_OPTIONS} head ${MGZIP_OPTIONS} -n 5 \
      -i ${GRAPHS}/qualifiers.tsv.gz --input-keys id \
      --filter-on - --filter-keys node1
 
+echo -e "\n*** Prepare the undirected pagerank graph: ***"
+time kgtk ${KGTK_OPTIONS} graph-statistics \
+    -i ${GRAPHS}/claims.tsv.gz \
+    -o ${GRAPHS}/metadata.pagerank.undirected.tsv.gz \
+    --compute-pagerank True \
+    --compute-hits False \
+    --page-rank-property Pundirected_pagerank \
+    --use-mgzip True \
+    --mgzip-threads 12 \
+    --output-degrees False \
+    --output-pagerank True \
+    --output-hits False \
+    --output-statistics-only \
+    --undirected True \
+    --log-file ${WORKING_FOLDER}/metadata.pagerank.undirected.summary.txt
+
 echo -e "\n*** The data files are ready to be loaded into the graph cache. ***"
