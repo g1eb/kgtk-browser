@@ -6,7 +6,7 @@ import kgtk.kypher.api as kapi
 
 VERSION = '0.1.0'
 GRAPH_ID = 'Venice'
-GRAPH_CACHE = '/data/kgtk-browser/venice.temp/wikidata.sqlite3.db'
+GRAPH_CACHE = '/data/kgtk-browser/venice/temp.venice/wikidata.sqlite3.db'
 LOG_LEVEL = 1
 INDEX_MODE = 'auto'
 MAX_RESULTS = 10000
