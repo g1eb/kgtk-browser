@@ -1,55 +1,85 @@
 # kgtk-browser
 
-## Requirements
+Download the codebase and setup the python environment. In a terminal run the following commands ,
 
-* you need to install the kgtk and flask Python packages
-* download wikidata-20210215-dwd-browser.sqlite3.db.gz  (about 16GB) from the KGTK shared drive
-  in the KGTK > datasets > wikidata-20210215-dwd folder; this database has been
-  preloaded and indexed and should work out-of-the-box without requiring
-  any of the data files it was constructed from
-  `rclone copy kgtk:datasets/wikidata-20210215-dwd/wikidata-20210215-dwd-browser.sqlite3.db.gz .`
-* uncompress the DB somewhere on your system which will require about 60GB
-  of space; for best performance this should be on an SSD drive
-* edit DB_GRAPH_CACHE in kgtk_browser_config.py to point to that location,
-  or copy (or move) the uncompressed file to `./wikidata.sqlite3.db`.
+```
+git clone https://github.com/usc-isi-i2/kgtk-browser
+cd kgtk-browser
+git checkout dev
+conda create -n kgtk-env python=3.9
+conda activate kgtk-env
+pip install -r requirements.txt
+```
 
+## Prerequisites
 
-## Running the web app
+The following files are required ,
+
+- labels.en.tsv.gz
+- aliases.en.tsv.gz
+- descriptions.en.tsv.gz
+- claims.tsv.gz
+- metadata.property.datatypes.tsv.gz
+- qualifiers.tsv.gz
+- metadata.pagerank.undirected.tsv.gz
+- derived.isastar.tsv.gz
+
+The files `metadata.pagerank.undirected.tsv.gz` `derived.isastar.tsv.gz` and can be created by running this [notebook](https://github.com/usc-isi-i2/kgtk/blob/dev/use-cases/Wikidata%20Useful%20Files.ipynb)
+
+## SQLITE or ElasticSearch
+
+KGTK Browser can be setup with either a SQLITE DB Cache file or a [KGTK Search api](https://github.com/usc-isi-i2/kgtk-search). We'll describe both options.
+
+### Building a SQLITE Cache DB file
+- Execute [this](https://github.com/usc-isi-i2/kgtk-browser/blob/dev/KGTK-Query-Text-Search-Setup.ipynb) notebook.
+- Set parameters: `create_db = 'yes'` and `create_es = 'no'` to create only the SQLITE DB Cache file.
+- Setup other parameters as described in the notebook.
+
+### Setting up ElasticSearch Index and KGTK Search API
+- Execute [this](https://github.com/usc-isi-i2/kgtk-browser/blob/dev/KGTK-Query-Text-Search-Setup.ipynb) notebook.
+- Set parameters: `create_db = 'no'` and `create_es = 'yes'` to create and load the ElasticSearch index.
+- Setup other parameters as described in the notebook.
+- This will result in a ElasticSearch index which can now be used to setup the [KGTK Search api](https://github.com/usc-isi-i2/kgtk-search).
+- Setup the [KGTK Search API](https://github.com/usc-isi-i2/kgtk-search)
+
+## Running the web app using SQLITE Cache File
+
+Update the parameter `GRAPH_CACHE` in the file `kgtk_browser_config.py` and set it to the cache file location as created in the step `Building a SQLITE Cache DB file`.
+
+Ensure that recent versions of "npm" and "node" are installed:
+
+```
+npm --version
+7.20.3
+```
+```
+node --version
+v16.6.2
+````
 
 The following steps will start a server on your local host at the default port (5000):
 
+Build the frontend files ,
+
 ```
-> cd .../kgtk-browser
-> export FLASK_APP=kgtk_browser_app.py
-> export FLASK_ENV=development
-> export KGTK_BROWSER_CONFIG=$PWD/kgtk_browser_config.py
-> flask run
+cd app
+export REACT_APP_FRONTEND_URL='/browser'
+export REACT_APP_BACKEND_URL=''
+
+npm run build
 ```
 
-When using the a csh-based shell, use the following:
+Start the server using `kgtk browse` ,
+
 ```
-setenv FLASK_APP kgtk_browser_app.py
-setenv FLASK_ENV development
-setenv KGTK_BROWSER_CONFIG $PWD/kgtk_browser_config.py
-flask run
+cd ..
+export PYTHONPATH=$PYTHONPATH:$PWD
+kgtk browse --host localhost --port 5000
 ```
 
 NOTE: using development mode turns on JSON pretty-printing which about
 doubles the size of response objects.  For faster server response,
 set `FLASK_ENV` to `production`.
-
-## Auto Indexing
-
-By default, `INDEX_MODE` in `/kgtk_browser_config.py` is
-set to `auto`. This will pre-build various indexes during the first
-server startup, delaying the server by about 25 minutes (more or less,
-depending upon your system's performance).
-
-The pre-built indexes should speed up the server's response to
-queries.
-
-Alternatively, `INDEX_MODE` may be set to `none`.  The initial server
-startup will be faster, but the server's response to queries may be slower.
 
 
 ## Design and status
@@ -1047,47 +1077,3 @@ Repeating the same query resulted in one additional message:
 ```
 127.0.0.1 - - [20/Aug/2021 13:31:33] "GET /kgtk/browser/backend/get_all_node_data?node=Q100104271&lang=en&images=true&fanouts=true&inverse=false HTTP/1.1" 200 -
 ```
-
-## Running with the Revised Browser
-
-The revised browser currently requires two servers:
-
-1) an npm server to serve the browser client code
-
-2) a data server.
-
-
-### Installing the npm server
-
-0) Ensure that recent versions of "npm" and "node" are installed:
-
-npm --version
-7.20.3
-
-node --version
-v16.6.2
-
-1) Change to the "app/" folder.
-
-cd app/
-
-2) Install the latest npm repository
-
-npm install
-
-This will install files in "app/node_modules/" as directed by "app/package.json"
-
-3) Ensure that the HOST envar is not incorrecty set
-
-unsetenv HOST
-
-4) Edit the "proxy" value in "app/package.json" if necessary.
-   Since I have the data server running on port 5000:
-
-  "proxy": "http://localhost:5000"
-
-
-5) Start the browser client server.
-
-npm start
-

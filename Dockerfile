@@ -1,5 +1,5 @@
 # A dockerfile for running the kgtk-browser
-FROM python:3.7-stretch
+FROM python:3.9
 
 RUN apt-get update
 RUN apt-get install sqlite3
