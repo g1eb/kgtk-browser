@@ -472,7 +472,7 @@ class BrowserBackend(object):
         may or may not be case-insensitive. The search must be fast.
         """
 
-        query = self.get_config('RB_GET_EVENTS_AND_SCORES_BY_DATE')
+        query = self.api.RB_GET_EVENTS_AND_SCORES_BY_DATE
 
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
@@ -485,7 +485,7 @@ class BrowserBackend(object):
         may or may not be case-insensitive. The search must be fast.
         """
 
-        query = self.get_config('RB_GET_MORAL_FOUNDATIONS_WITH_P585')
+        query = self.api.RB_GET_MORAL_FOUNDATIONS_WITH_P585
 
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
@@ -498,7 +498,7 @@ class BrowserBackend(object):
         may or may not be case-insensitive. The search must be fast.
         """
 
-        query = self.get_config('RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE')
+        query = self.api.RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE
 
         return self.execute_query(query, NODE=node, LIMIT=limit, fmt=fmt)
 
@@ -511,7 +511,7 @@ class BrowserBackend(object):
         may or may not be case-insensitive. The search must be fast.
         """
 
-        query = self.get_config('RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585')
+        query = self.api.RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585
 
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
