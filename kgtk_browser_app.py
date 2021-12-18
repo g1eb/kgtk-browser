@@ -1937,7 +1937,7 @@ def get_node_labels():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             labels = backend.get_node_labels(args['node'], lang=args['lang'], fmt=args['fmt'])
             return backend.query_result_to_string(labels)
     except Exception as e:
@@ -1951,7 +1951,7 @@ def get_node_aliases():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             aliases = backend.get_node_aliases(args['node'], lang=args['lang'], fmt=args['fmt'])
             return backend.query_result_to_string(aliases)
     except Exception as e:
@@ -1965,7 +1965,7 @@ def get_node_descriptions():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             descriptions = backend.get_node_descriptions(args['node'], lang=args['lang'], fmt=args['fmt'])
             return backend.query_result_to_string(descriptions)
     except Exception as e:
@@ -1979,7 +1979,7 @@ def get_node_images():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             images = backend.get_node_images(args['node'], fmt=args['fmt'])
             return backend.query_result_to_string(images)
     except Exception as e:
@@ -1993,7 +1993,7 @@ def get_node_edges():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             edges = backend.get_node_edges(
                 args['node'], lang=args['lang'], images=args['images'], fanouts=args['fanouts'], fmt=args['fmt'])
             return backend.query_result_to_string(edges)
@@ -2008,7 +2008,7 @@ def get_node_inverse_edges():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             edges = backend.get_node_inverse_edges(
                 args['node'], lang=args['lang'], images=args['images'], fanouts=args['fanouts'], fmt=args['fmt'])
             return backend.query_result_to_string(edges)
@@ -2023,7 +2023,7 @@ def get_node_edge_qualifiers():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             qualifiers = backend.get_node_edge_qualifiers(
                 args['node'], lang=args['lang'], images=args['images'], fanouts=args['fanouts'], fmt=args['fmt'])
             return backend.query_result_to_string(qualifiers)
@@ -2038,7 +2038,7 @@ def get_node_inverse_edge_qualifiers():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             qualifiers = backend.get_node_inverse_edge_qualifiers(
                 args['node'], lang=args['lang'], images=args['images'], fanouts=args['fanouts'], fmt=args['fmt'])
             return backend.query_result_to_string(qualifiers)
@@ -2051,7 +2051,7 @@ def get_node_inverse_edge_qualifiers():
 def get_configuration():
     """Show the currently loaded configuration values."""
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             return backend.query_result_to_string(backend.api.config)
     except Exception as e:
         print('ERROR: ' + str(e))
@@ -2069,7 +2069,7 @@ def get_all_node_data():
     if args['node'] is None:
         flask.abort(HTTPStatus.BAD_REQUEST.value)
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
             data = backend.get_all_node_data(
                 args['node'], lang=args['lang'], images=args['images'], fanouts=args['fanouts'],
                 inverse=args['inverse'])
@@ -2092,7 +2092,7 @@ def get_events_and_scores_by_date():
     match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
 
             if debug:
                 start = datetime.datetime.now()
@@ -2187,7 +2187,7 @@ def get_mf_scores_by_date():
     match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
 
             if debug:
                 start = datetime.datetime.now()
@@ -2271,7 +2271,7 @@ def get_mf_scores_by_date_for_node(node):
     match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
 
             if debug:
                 start = datetime.datetime.now()
@@ -2357,7 +2357,7 @@ def get_mf_scores_and_concreteness_by_date():
     match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
-        with get_backend(app) as backend:
+        with get_backend() as backend:
 
             if debug:
                 start = datetime.datetime.now()
