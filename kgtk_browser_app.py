@@ -26,16 +26,16 @@ from kgtk_browser_config import KypherAPIObject
 
 # map moral foundation Qnode ids to labels
 scores_mapping = {
-    'Q00_authorityvice': 'authority/vice',
-    'Q00_authorityvirtue': 'authority/virtue',
-    'Q00_fairnessvice': 'fairness/vice',
-    'Q00_fairnessvirtue': 'fairness/virtue',
-    'Q00_harmvice': 'harm/vice',
-    'Q00_harmvirtue': 'harm/virtue',
-    'Q00_ingroupvice': 'ingroup/vice',
-    'Q00_ingroupvirtue': 'ingroup/virtue',
-    'Q00_purityvice': 'purity/vice',
-    'Q00_purityvirtue': 'purity/virtue',
+    'Q00_authorityvice': 'subversion',
+    'Q00_authorityvirtue': 'authority',
+    'Q00_fairnessvice': 'cheating',
+    'Q00_fairnessvirtue': 'fairness',
+    'Q00_harmvice': 'harm',
+    'Q00_harmvirtue': 'care',
+    'Q00_ingroupvice': 'betrayal',
+    'Q00_ingroupvirtue': 'loyalty',
+    'Q00_purityvice': 'degradation',
+    'Q00_purityvirtue': 'sanctity',
     'Q00_concreteness': 'concreteness',
 }
 
