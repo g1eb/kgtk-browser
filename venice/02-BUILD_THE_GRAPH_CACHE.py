@@ -171,7 +171,7 @@ def text_search_labels(search_text, limit=20):
 # In[19]:
 
 
-#text_search_labels('arn sch')
+text_search_labels('cabo delgado')
 
 
 # ## Define a function to search for Qnodes Exactly
@@ -206,13 +206,13 @@ def exact_search_items(search_text, limit=20):
 # In[21]:
 
 
-#exact_search_items('q30')
+exact_search_items('Q00_venice_event')
 
 
 # In[22]:
 
 
-#exact_search_items('Q140')
+exact_search_items('Q00_authority')
 
 
 # ## Define a function to search labels Exactly
@@ -243,7 +243,7 @@ def exact_search_labels(search_text, limit=20):
 # In[24]:
 
 
-#exact_search_labels('canada')
+exact_search_labels('Long live Mozambique!')
 
 
 # ## Define a function to fo a `textlike` search
@@ -274,4 +274,4 @@ def text_like_search_labels(search_text, limit=20):
 # In[26]:
 
 
-#text_like_search_labels("fifa group b")
+text_like_search_labels("Mozambique")
