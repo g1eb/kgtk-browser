@@ -35,7 +35,7 @@ KG_DATATYPES_LABEL = 'datatype'
 KYPHER_OBJECTS_NUM = 5
 
 # Data server limits
-VALUELIST_MAX_LEN: int = 10
+VALUELIST_MAX_LEN: int = 100
 
 
 # Query configuration section:
