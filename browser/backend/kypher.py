@@ -464,6 +464,11 @@ class BrowserBackend(object):
                                   fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
+    def venice_document(self, document_id):
+        query = self.api.VENICE_DOCUMENT
+        return self.execute_query(query, document_id=document_id)
+
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def rb_get_events_and_scores_by_date(self, limit: int = 20, lang=None, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 

@@ -2172,6 +2172,36 @@ def get_events_and_scores_by_date():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/document/<string:document_id>', methods=['GET'])
+def venice_document(document_id):
+    backend = get_backend()
+    results = backend.venice_document(document_id)
+
+    # return an error message if there are no responses
+    if not results:
+        return flask.jsonify({
+            'err': 'query did not find any matching documents',
+        }), 200
+
+    # ideally, document id should match only one document
+    document = results[0]
+
+    # build the response json
+    response = {
+        'document_id': document[0],
+        'document_text': document[1],
+        'document_label': document[2],
+        'document_instance_of': document[3],
+        'sentence_id': document[4],
+        'sentence_text': document[5],
+        'sentence_instance_of': document[6],
+        'emotion (optional)': document[7],
+        'datetime (optional)': document[8],
+    }
+
+    return flask.jsonify(response), 200
+
+
 @app.route('/kb/get_mf_scores_by_date', methods=['GET'])
 def get_mf_scores_by_date():
 

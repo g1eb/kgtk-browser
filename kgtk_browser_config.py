@@ -77,6 +77,43 @@ class KypherAPIObject(object):
         self.kapi.add_input(KG_FANOUTS_GRAPH, name='fanouts', handle=True)
         self.kapi.add_input(KG_DATATYPES_GRAPH, name='datatypes', handle=True)
 
+        self.VENICE_DOCUMENT = self.kapi.get_query(
+            doc="""
+            Show the full document as it appears in the KG
+            """,
+            name='VENICE_DOCUMENT',
+            inputs=('edges', 'label'),
+            maxcache=MAX_CACHE_SIZE * 10,
+            match='''
+                $edges: (document_id)-[:P31]->(document_instance_of),
+                $edges: (document_id)-[:P00_venice_document_text]->(document_text),
+                $label: (document_id)-[:label]->(document_label),
+                $edges: (document_id)-[:P00_venice_contain_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P31]->(sentence_instance_of),
+                $label: (sentence_id)-[:label]->(sentence_text)
+            ''',
+            opt1='''
+                $edges: (document_id)-[:P00_venice_emo]->(emotion)
+            ''',
+            opt2='''
+                $edges: (document_id)-[:P585]->(datetime)
+            ''',
+            where='''
+                document_id=$document_id
+            ''',
+            ret='''
+                document_id,
+                document_text,
+                document_label,
+                document_instance_of,
+                sentence_id,
+                sentence_text,
+                sentence_instance_of,
+                emotion,
+                datetime
+            '''
+        )
+
         self.RB_GET_EVENTS_AND_SCORES_BY_DATE = self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_events_and_scores_by_date()'.
