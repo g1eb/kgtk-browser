@@ -464,7 +464,7 @@ class BrowserBackend(object):
                                   fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
-    def rb_get_events_and_scores_by_date(self, limit: int = 20, lang=None, fmt=None, ignore_case: bool = False):
+    def rb_get_events_and_scores_by_date(self, limit: int = 20, lang=None, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
         This search method supports rb_get_kb_query(), which generates a list of
@@ -477,7 +477,7 @@ class BrowserBackend(object):
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
-    def rb_get_moral_foundations_with_p585(self, limit: int = 20, lang=None, fmt=None, ignore_case: bool = False):
+    def rb_get_moral_foundations_with_p585(self, limit: int = 20, lang=None, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
         This search method supports rb_get_kb_query(), which generates a list of
@@ -490,7 +490,7 @@ class BrowserBackend(object):
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
-    def rb_get_moral_foundations_with_p585_for_node(self, node, limit: int = 20, lang=None, fmt=None, ignore_case: bool = False):
+    def rb_get_moral_foundations_with_p585_for_node(self, node, limit: int = 20, lang=None, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
         This search method supports rb_get_kb_query(), which generates a list of
@@ -503,7 +503,7 @@ class BrowserBackend(object):
         return self.execute_query(query, NODE=node, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
-    def rb_get_moral_foundations_and_concreteness_with_p585(self, limit: int = 20, lang=None, fmt=None, ignore_case: bool = False):
+    def rb_get_moral_foundations_and_concreteness_with_p585(self, limit: int = 20, lang=None, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
         This search method supports rb_get_kb_query(), which generates a list of

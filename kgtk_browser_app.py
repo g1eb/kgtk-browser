@@ -2098,9 +2098,7 @@ def get_events_and_scores_by_date():
                 start = datetime.datetime.now()
 
             if match_label_prefixes:
-                results = backend.rb_get_events_and_scores_by_date(lang=lang,
-                                                                    ignore_case=match_label_ignore_case,
-                                                                    limit=match_label_prefixes_limit)
+                results = backend.rb_get_events_and_scores_by_date(lang=lang, limit=match_label_prefixes_limit)
 
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
@@ -2196,7 +2194,6 @@ def get_mf_scores_by_date():
 
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585(lang=lang,
-                                                                    ignore_case=match_label_ignore_case,
                                                                     limit=match_label_prefixes_limit)
 
                 if verbose:
@@ -2282,7 +2279,6 @@ def get_mf_scores_by_date_for_node(node):
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585_for_node(node=node,
                                                                             lang=lang,
-                                                                            ignore_case=match_label_ignore_case,
                                                                             limit=match_label_prefixes_limit)
 
                 if verbose:
@@ -2367,7 +2363,6 @@ def get_mf_scores_and_concreteness_by_date():
 
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_and_concreteness_with_p585(lang=lang,
-                                                                    ignore_case=match_label_ignore_case,
                                                                     limit=match_label_prefixes_limit)
 
                 if verbose:
