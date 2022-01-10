@@ -158,6 +158,7 @@ class KypherAPIObject(object):
                 quality_id,
                 quality_score
             ''',
+            limit= "$LIMIT"
         )
 
         self.RB_GET_MORAL_FOUNDATIONS_WITH_P585 = self.kapi.get_query(
