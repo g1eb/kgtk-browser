@@ -87,16 +87,18 @@ class KypherAPIObject(object):
             match='''
                 $edges: (document_id)-[:P31]->(document_instance_of),
                 $edges: (document_id)-[:P00_venice_document_text]->(document_text),
-                $label: (document_id)-[:label]->(document_label),
+                $label: (document_id)-[:label]->(document_label)
+            ''',
+            opt1='''
                 $edges: (document_id)-[:P00_venice_contain_sentence]->(sentence_id),
                 $edges: (sentence_id)-[:P31]->(sentence_instance_of),
                 $label: (sentence_id)-[:label]->(sentence_text)
             ''',
-            opt1='''
+            opt2='''
                 $edges: (document_id)-[:P00_venice_emo]->(emotion_id),
                 $label: (emotion_id)-[:label]->(emotion_text)
             ''',
-            opt2='''
+            opt3='''
                 $edges: (document_id)-[:P585]->(document_datetime)
             ''',
             where='''
