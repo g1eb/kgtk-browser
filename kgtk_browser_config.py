@@ -92,6 +92,8 @@ class KypherAPIObject(object):
             opt1='''
                 $edges: (document_id)-[:P00_venice_contain_sentence]->(sentence_id),
                 $edges: (sentence_id)-[:P31]->(sentence_instance_of),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[:P00_venice_data_source]->(sentence_data_source),
                 $label: (sentence_id)-[:label]->(sentence_text)
             ''',
             opt2='''
@@ -113,6 +115,8 @@ class KypherAPIObject(object):
                 sentence_id,
                 sentence_text,
                 sentence_instance_of,
+                sentence_data_source,
+                sentence_datetime,
                 emotion_id,
                 emotion_text
             '''

@@ -2204,14 +2204,16 @@ def venice_document(document_id):
                 'id': sentence_id,
                 'text': result[6],
                 'instance_of': result[7],
+                'data_source': result[8],
+                'datetime': result[9],
             }
 
         # check emotions
-        emotion_id = result[8]
+        emotion_id = result[10]
         if emotion_id not in document['emotions']:
             document['emotions'][emotion_id] = {
                 'id': emotion_id,
-                'text': result[9],
+                'text': result[11],
             }
 
     return flask.jsonify(document), 200
