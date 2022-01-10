@@ -2183,23 +2183,30 @@ def venice_document(document_id):
             'err': 'query did not find any matching documents',
         }), 200
 
-    # ideally, document id should match only one document
-    document = results[0]
-
-    # build the response json
-    response = {
-        'document_id': document[0],
-        'document_text': document[1],
-        'document_label': document[2],
-        'document_instance_of': document[3],
-        'sentence_id': document[4],
-        'sentence_text': document[5],
-        'sentence_instance_of': document[6],
-        'emotion (optional)': document[7],
-        'datetime (optional)': document[8],
+    # combine results into a single document
+    document = {
+        'id': results[0][0],
+        'text': results[0][1],
+        'label': results[0][2],
+        'instance_of': results[0][3],
+        'datetime': results[0][4],
+        'sentences': {},
+        'emotions': {},
     }
 
-    return flask.jsonify(response), 200
+    # loop over the results and combine them
+    for result in results:
+
+        # check sentences
+        sentence_id = result[5]
+        if sentence_id not in document['sentences']:
+            document['sentences'][sentence_id] = {
+                'id': sentence_id,
+                'text': result[6],
+                'instance_of': result[7],
+            }
+
+    return flask.jsonify(document), 200
 
 
 @app.route('/kb/get_mf_scores_by_date', methods=['GET'])
