@@ -93,7 +93,8 @@ class KypherAPIObject(object):
                 $label: (sentence_id)-[:label]->(sentence_text)
             ''',
             opt1='''
-                $edges: (document_id)-[:P00_venice_emo]->(emotion)
+                $edges: (document_id)-[:P00_venice_emo]->(emotion_id),
+                $label: (emotion_id)-[:label]->(emotion_text)
             ''',
             opt2='''
                 $edges: (document_id)-[:P585]->(document_datetime)
@@ -110,7 +111,8 @@ class KypherAPIObject(object):
                 sentence_id,
                 sentence_text,
                 sentence_instance_of,
-                emotion
+                emotion_id,
+                emotion_text
             '''
         )
 
