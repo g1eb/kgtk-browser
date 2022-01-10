@@ -2262,26 +2262,26 @@ def get_mf_scores_by_date():
                         results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
 
                     # get the correct key/label for the moral foundation score
-                    mf_key = scores_mapping[result[3]]
+                    mf_key = scores_mapping[result[2]]
                     if mf_key not in results_grouped_by_sentence[sentence_id]:
-                        mf_score = float(result[4])
+                        mf_score = float(result[3])
                         results_grouped_by_sentence[sentence_id][mf_key] = mf_score
 
                 for sentence_id, values in results_grouped_by_sentence.items():
                     try:
                         matches.append({
-                            "id": sentence_id,
-                            "datetime": values['datetime'],
-                            "authority/virtue": values["authority/virtue"],
-                            "authority/vice": values["authority/vice"],
-                            "fairness/virtue": values["fairness/virtue"],
-                            "fairness/vice": values["fairness/vice"],
-                            "harm/virtue": values["harm/virtue"],
-                            "harm/vice": values["harm/vice"],
-                            "ingroup/virtue": values["ingroup/virtue"],
-                            "ingroup/vice": values["ingroup/vice"],
-                            "purity/virtue": values["purity/virtue"],
-                            "purity/vice": values["purity/vice"],
+                            'id': sentence_id,
+                            'datetime': values['datetime'],
+                            'authority': values['authority'],
+                            'subversion': values['subversion'],
+                            'fairness': values['fairness'],
+                            'cheating': values['cheating'],
+                            'care': values['care'],
+                            'harm': values['harm'],
+                            'loyalty': values['loyalty'],
+                            'betrayal': values['betrayal'],
+                            'sanctity': values['sanctity'],
+                            'degradation': values['degradation'],
                         })
                     except KeyError:
                         print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
