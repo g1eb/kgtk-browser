@@ -2126,9 +2126,9 @@ def get_events_and_scores_by_date():
                         results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
 
                     # get the correct key/label for the moral foundation score
-                    mf_key = scores_mapping[result[4]]
+                    mf_key = scores_mapping[result[3]]
                     if mf_key not in results_grouped_by_sentence[sentence_id]:
-                        mf_score = float(result[5])
+                        mf_score = float(result[4])
                         results_grouped_by_sentence[sentence_id][mf_key] = round(mf_score, 3)
 
                 results_grouped_by_date = {}
@@ -2142,16 +2142,16 @@ def get_events_and_scores_by_date():
                             "id": sentence_id,
                             "sentence": values['sentence'],
                             "scores": {
-                                "authority/virtue": values["authority/virtue"],
-                                "authority/vice": values["authority/vice"],
-                                "fairness/virtue": values["fairness/virtue"],
-                                "fairness/vice": values["fairness/vice"],
-                                "harm/virtue": values["harm/virtue"],
-                                "harm/vice": values["harm/vice"],
-                                "ingroup/virtue": values["ingroup/virtue"],
-                                "ingroup/vice": values["ingroup/vice"],
-                                "purity/virtue": values["purity/virtue"],
-                                "purity/vice": values["purity/vice"],
+                                'authority': values['authority'],
+                                'subversion': values['subversion'],
+                                'fairness': values['fairness'],
+                                'cheating': values['cheating'],
+                                'care': values['care'],
+                                'harm': values['harm'],
+                                'loyalty': values['loyalty'],
+                                'betrayal': values['betrayal'],
+                                'sanctity': values['sanctity'],
+                                'degradation': values['degradation'],
                             },
                         })
                     except KeyError:
