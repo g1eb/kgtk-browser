@@ -204,33 +204,35 @@ class KypherAPIObject(object):
             inputs=('edges', 'qualifiers'),
             maxcache=MAX_CACHE_SIZE * 10,
             match='''
-                $edges: (actor)-[:P1344]->(event),
-                $edges: (event)-[:P00_venice_from_sentence]->(node),
-                $edges: (node)-[:P585]->(datetime),
-                $edges: (node)-[msf]->(msftype),
-                $qualifiers: (msf)-[]->(msf_score)
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[quality_type]->(quality_id),
+                $qualifiers: (quality_type)-[]->(quality_score)
             ''',
             where='''
-                msftype in [
-                    "Q00_authorityvirtue",
-                    "Q00_authorityvice",
-                    "Q00_fairnessvirtue",
-                    "Q00_fairnessvice",
-                    "Q00_harmvirtue",
-                    "Q00_harmvice",
-                    "Q00_ingroupvirtue",
-                    "Q00_ingroupvice",
-                    "Q00_purityvirtue",
-                    "Q00_purityvice"
-                ] and actor=$NODE
+                quality_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation',
+                    'Q00_concreteness'
+                ] and participant_id=$NODE
             ''',
             ret='''
-                node,
-                datetime,
-                msf,
-                msftype,
-                msf_score
-            '''
+                sentence_id,
+                sentence_datetime,
+                quality_id,
+                quality_score
+            ''',
+            limit= "$LIMIT"
         )
 
         self.RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585 = self.kapi.get_query(
