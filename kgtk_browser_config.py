@@ -130,21 +130,34 @@ class KypherAPIObject(object):
             inputs=('edges', 'label', 'qualifiers'),
             maxcache=MAX_CACHE_SIZE * 10,
             match='''
-                $edges: (node)-[:P31]->(:Q00_venice_sentence),
-                $labels: (node)-[:label]->(sentence),
-                $edges: (node)-[:P585]->(datetime),
-                $edges: (node)-[msf]->(msftype), (msftype)-[:P31]->(:Q1207505),
-                $qualifiers: (msf)-[]->(msf_score)
+                $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $label: (sentence_id)-[:label]->(sentence_text),
+                $edges: (sentence_id)-[quality_type]->(quality_id),
+                $qualifiers: (quality_type)-[]->(quality_score)
+            ''',
+            where='''
+                quality_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation',
+                    'Q00_concreteness'
+                ]
             ''',
             ret='''
-                node,
-                sentence,
-                datetime,
-                msf,
-                msftype,
-                msf_score
+                sentence_id,
+                sentence_text,
+                sentence_datetime,
+                quality_id,
+                quality_score
             ''',
-            limit= "$LIMIT"
         )
 
         self.RB_GET_MORAL_FOUNDATIONS_WITH_P585 = self.kapi.get_query(
