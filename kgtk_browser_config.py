@@ -83,7 +83,7 @@ class KypherAPIObject(object):
             """,
             name='VENICE_DOCUMENT',
             inputs=('edges', 'label'),
-            maxcache=MAX_CACHE_SIZE * 10,
+            maxcache=MAX_CACHE_SIZE * 100,
             match='''
                 $edges: (document_id)-[:P31]->(document_instance_of),
                 $edges: (document_id)-[:P00_venice_document_text]->(document_text),
@@ -128,7 +128,7 @@ class KypherAPIObject(object):
             """,
             name='RB_GET_EVENTS_AND_SCORES_BY_DATE',
             inputs=('edges', 'label', 'qualifiers'),
-            maxcache=MAX_CACHE_SIZE * 10,
+            maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
@@ -165,7 +165,7 @@ class KypherAPIObject(object):
             """,
             name='RB_GET_MORAL_FOUNDATIONS_WITH_P585',
             inputs=('edges', 'qualifiers'),
-            maxcache=MAX_CACHE_SIZE * 10,
+            maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
@@ -202,7 +202,7 @@ class KypherAPIObject(object):
             """,
             name='RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE',
             inputs=('edges', 'qualifiers'),
-            maxcache=MAX_CACHE_SIZE * 10,
+            maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (participant_id)-[:P1344]->(event_id),
                 $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
@@ -241,7 +241,7 @@ class KypherAPIObject(object):
             """,
             name='RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585',
             inputs=('edges', 'qualifiers'),
-            maxcache=MAX_CACHE_SIZE * 10,
+            maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
