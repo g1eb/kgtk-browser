@@ -2476,4 +2476,4 @@ def get_acled_forecast(filename):
 
 if __name__ == '__main__':
     os.environ['KGTK_BROWSER_CONFIG'] = './kgtk_browser_config.py'
-    app.run(host='0.0.0.0', port=3233)
+    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
