@@ -148,6 +148,7 @@ app.config['VERBOSE'] = app.config.get('VERBOSE', DEFAULT_VERBOSE)
 app.config['KYPHER_OBJECTS_NUM'] = app.config.get('KYPHER_OBJECTS_NUM', DEFAULT_KYPHER_OBJECTS_NUM)
 
 kgtk_backends = {}
+print('loading kgtk api..')
 for i in range(app.config['KYPHER_OBJECTS_NUM']):
     k_api = KypherAPIObject()
     _api = kybe.BrowserBackend(api=k_api)
