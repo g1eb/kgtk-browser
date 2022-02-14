@@ -9,20 +9,20 @@ const fetchESSearchResults = q => {
   }
 
   return new Promise((resolve, reject) => {
-    fetch(url, { method: 'GET' }).
-      then(response => response.json()).
-      then(response => resolve(response.map(result => createDict(result)))).
-      catch(err => reject(err))
+    fetch(url, { method: 'GET' })
+      .then(response => response.json())
+      .then(response => resolve(response.map(result => createDict(result))))
+      .catch(err => reject(err))
   })
 }
 
 function createDict (result) {
-  var d = {}
-  d['ref'] = result.qnode
-  d['text'] = result.qnode
-  d['description'] = result.label[0]
-  d['ref_description'] = result.description[0]
-  return d
+  return {
+    'ref': result.qnode,
+    'text': result.qnode,
+    'description': result.label[0],
+    'ref_description': result.description[0],
+  }
 }
 
 export default fetchESSearchResults

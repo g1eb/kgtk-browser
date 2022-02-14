@@ -31,6 +31,9 @@ COPY post_deploy.sh /src/
 COPY venice/ /src/venice/
 COPY app/ /src/app/
 
+RUN git clone -b dev --single-branch https://github.com/usc-isi-i2/kgtk.git
+RUN pip install -e kgtk
+
 ARG FLASK_ENV=production
 ENV FLASK_ENV=$FLASK_ENV
 
