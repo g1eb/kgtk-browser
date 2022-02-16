@@ -24,15 +24,14 @@ COPY requirements.txt /src/requirements.txt
 
 RUN pip install -r /src/requirements.txt
 
+RUN pip install -e git+https://github.com/usc-isi-i2/kgtk.git@ee053b021d83c4d74797a24e98c25b71c6b852c3#egg=kgtk
+
 COPY kgtk_browser_config.py /src/
 COPY kgtk_browser_app.py /src/
 COPY browser/backend/ /src/browser/backend/
 COPY post_deploy.sh /src/
 COPY venice/ /src/venice/
 COPY app/ /src/app/
-
-RUN git clone -b dev --single-branch https://github.com/usc-isi-i2/kgtk.git
-RUN pip install -e kgtk
 
 ARG FLASK_ENV=production
 ENV FLASK_ENV=$FLASK_ENV
