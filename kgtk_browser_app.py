@@ -36,6 +36,23 @@ from kgtk.visualize.visualize_api import KgtkVisualize
 
 from kgtk_browser_config import KypherAPIObject
 
+
+# map emotion Qnode ids to labels
+emotions_mapping = {
+    'Q00_emotion_anticipation': 'anticipation',
+    'Q00_emotion_love': 'love',
+    'Q00_emotion_joy': 'joy',
+    'Q00_emotion_pessimism': 'pessimism',
+    'Q00_emotion_optimism': 'optimism',
+    'Q00_emotion_sadness': 'sadness',
+    'Q00_emotion_disgust': 'disgust',
+    'Q00_emotion_anger': 'anger',
+    'Q00_emotion_surprise': 'surprise',
+    'Q00_emotion_fear': 'fear',
+    'Q00_emotion_trust': 'trust',
+}
+
+
 # map moral foundation Qnode ids to labels
 scores_mapping = {
     'Q00_subversion': 'subversion',
