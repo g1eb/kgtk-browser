@@ -2393,16 +2393,17 @@ def get_daily_emotion_values():
                     daily_emotion_values[isodate] = grouped_by_date.loc[cursor].to_dict()
                 else:
                     daily_emotion_values[isodate] = {
-                        'authority': 0,
-                        'subversion': 0,
-                        'fairness': 0,
-                        'cheating': 0,
-                        'care': 0,
-                        'harm': 0,
-                        'loyalty': 0,
-                        'betrayal': 0,
-                        'sanctity': 0,
-                        'degradation': 0,
+                        'anticipation': 0,
+                        'love': 0,
+                        'joy': 0,
+                        'pessimism': 0,
+                        'optimism': 0,
+                        'sadness': 0,
+                        'disgust': 0,
+                        'anger': 0,
+                        'surprise': 0,
+                        'fear': 0,
+                        'trust': 0,
                     }
                 cursor += relativedelta(days=1)
 
