@@ -2526,6 +2526,160 @@ def get_daily_mf_values():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/get_daily_mf_and_emotion_values', methods=['GET'])
+def get_daily_mf_and_emotion_values():
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            if match_label_prefixes:
+                mf_results = backend.rb_get_moral_foundations_with_p585(
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
+
+                placeholder = {
+                    # imputed moral foundation values
+                    'authority': 0,
+                    'subversion': 0,
+                    'fairness': 0,
+                    'cheating': 0,
+                    'care': 0,
+                    'harm': 0,
+                    'loyalty': 0,
+                    'betrayal': 0,
+                    'sanctity': 0,
+                    'degradation': 0,
+
+                    # imputed emotion values
+                    'anticipation': 0,
+                    'love': 0,
+                    'joy': 0,
+                    'pessimism': 0,
+                    'optimism': 0,
+                    'sadness': 0,
+                    'disgust': 0,
+                    'anger': 0,
+                    'surprise': 0,
+                    'fear': 0,
+                    'trust': 0,
+                }
+
+                results_grouped_by_date = {}
+                for result in mf_results:
+                    datetime_str = result[1]
+                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                    datetime_match = re.match(datetime_pattern, result[1])[1]
+                    datetime_iso = parser.isoparse(datetime_match)
+
+                    # get the iso formatted date string to use as a key
+                    result_key = datetime_iso.isoformat()
+
+                    # add empty result obj if it is not in the set already
+                    if result_key not in results_grouped_by_date:
+                        results_grouped_by_date[result_key] = placeholder.copy()
+
+                    # get the correct key/label for the moral foundation score
+                    mf_key = scores_mapping[result[2]]
+                    mf_score = float(result[3])
+                    # increase moral foundation value on that date
+                    results_grouped_by_date[result_key][mf_key] += mf_score
+
+
+                emotion_results = backend.rb_get_emotions_with_p585(
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
+
+                for result in emotion_results:
+                    datetime_str = result[1]
+                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                    datetime_match = re.match(datetime_pattern, result[1])[1]
+                    datetime_iso = parser.isoparse(datetime_match)
+
+                    # get the iso formatted date string to use as a key
+                    result_key = datetime_iso.isoformat()
+
+                    # add empty result obj if it is not in the set already
+                    if result_key not in results_grouped_by_date:
+                        results_grouped_by_date[result_key] = placeholder.copy()
+
+                    # get the correct key/label for the emotions
+                    emotion_key = emotions_mapping[result[2]]
+                    # increase emotion value on that date
+                    results_grouped_by_date[result_key][emotion_key] += 1
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+                start = datetime.datetime.now()
+
+
+            df = pd.DataFrame(results_grouped_by_date)
+            df = df.transpose()
+
+            # imputation part
+            # add empty dicts with 0s for missing dates
+
+            min_date = parser.isoparse(df.index.min())
+            max_date = parser.isoparse(df.index.max())
+
+            daily_values = {}
+            cursor = min_date
+            while cursor <= max_date:
+                isodate = cursor.isoformat()
+                if cursor in df.index:
+                    daily_values[isodate] = df.loc[cursor].to_dict()
+                else:
+                    daily_values[isodate] = {
+
+                        # imputed moral foundation values
+                        'authority': 0,
+                        'subversion': 0,
+                        'fairness': 0,
+                        'cheating': 0,
+                        'care': 0,
+                        'harm': 0,
+                        'loyalty': 0,
+                        'betrayal': 0,
+                        'sanctity': 0,
+                        'degradation': 0,
+
+                        # imputed emotion values
+                        'anticipation': 0,
+                        'love': 0,
+                        'joy': 0,
+                        'pessimism': 0,
+                        'optimism': 0,
+                        'sadness': 0,
+                        'disgust': 0,
+                        'anger': 0,
+                        'surprise': 0,
+                        'fear': 0,
+                        'trust': 0,
+                    }
+                cursor += relativedelta(days=1)
+
+            if debug:
+                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(daily_values), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
 @app.route('/kb/get_mf_scores_by_date', methods=['GET'])
 def get_mf_scores_by_date():
 
