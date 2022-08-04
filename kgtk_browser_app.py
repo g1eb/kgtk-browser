@@ -2659,11 +2659,8 @@ def get_daily_mf_and_emotion_values():
                 start = datetime.datetime.now()
 
             if match_label_prefixes:
-                mf_results = backend.rb_get_moral_foundations_with_p585(
-                    lang=lang,
-                    limit=match_label_prefixes_limit,
-                )
 
+                # create a placeholder with all 0 values
                 placeholder = {
                     # imputed moral foundation values
                     'authority': 0,
@@ -2691,6 +2688,12 @@ def get_daily_mf_and_emotion_values():
                     'trust': 0,
                 }
 
+                # get the moral foundation values with dates
+                mf_results = backend.rb_get_moral_foundations_with_p585(
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
+
                 results_grouped_by_date = {}
                 for result in mf_results:
                     datetime_str = result[1]
@@ -2713,7 +2716,7 @@ def get_daily_mf_and_emotion_values():
                     # increase moral foundation value on that date
                     results_grouped_by_date[result_key][mf_key] += mf_score
 
-
+                # get the identified emotions with dates
                 emotion_results = backend.rb_get_emotions_with_p585(
                     lang=lang,
                     limit=match_label_prefixes_limit,
