@@ -294,8 +294,7 @@ class KypherAPIObject(object):
                     'Q00_loyalty',
                     'Q00_betrayal',
                     'Q00_sanctity',
-                    'Q00_degradation',
-                    'Q00_concreteness'
+                    'Q00_degradation'
                 ] and participant_id=$NODE
             ''',
             ret='''
