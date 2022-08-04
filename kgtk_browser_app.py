@@ -2589,6 +2589,8 @@ def get_daily_mf_and_emotion_values():
 
                     # add empty result obj if it is not in the set already
                     if result_key not in results_grouped_by_date:
+
+                        # make sure we get a (shallow) copy of the original placeholder
                         results_grouped_by_date[result_key] = placeholder.copy()
 
                     # get the correct key/label for the moral foundation score
