@@ -2416,6 +2416,118 @@ def get_daily_emotion_values():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/get_daily_emotion_values_for_node/<string:node>', methods=['GET'])
+def get_daily_emotion_values_for_node(node):
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            matches = []
+
+            if match_label_prefixes:
+                results = backend.rb_get_emotions_with_p585_for_node(
+                    node=node,
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
+
+                if verbose:
+                    print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+                results_grouped_by_document = {}
+                for result in results:
+                    document_id = result[0]
+
+                    # add empty result obj if it is not in the set already
+                    if document_id not in results_grouped_by_document:
+                        results_grouped_by_document[document_id] = {}
+
+                    # clean up datetime str and add it to the result obj
+                    if 'datetime' not in results_grouped_by_document[document_id]:
+                        datetime_str = result[1]
+                        datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                        datetime_match = re.match(datetime_pattern, result[1])[1]
+                        datetime_iso = parser.isoparse(datetime_match)
+                        results_grouped_by_document[document_id]['datetime'] = datetime_iso
+
+                    # get the correct key/label for the emotions
+                    emotion_key = emotions_mapping[result[2]]
+                    if emotion_key not in results_grouped_by_document[document_id]:
+                        results_grouped_by_document[document_id][emotion_key] = 1
+
+                for document_id, values in results_grouped_by_document.items():
+                    try:
+                        matches.append({
+                            'id': document_id,
+                            'datetime': values.get('datetime'),
+                            'anticipation': values.get('anticipation', 0),
+                            'love': values.get('love', 0),
+                            'joy': values.get('joy', 0),
+                            'pessimism': values.get('pessimism', 0),
+                            'optimism': values.get('optimism', 0),
+                            'sadness': values.get('sadness', 0),
+                            'disgust': values.get('disgust', 0),
+                            'anger': values.get('anger', 0),
+                            'surprise': values.get('surprise', 0),
+                            'fear': values.get('fear', 0),
+                            'trust': values.get('trust', 0),
+                        })
+                    except KeyError:
+                        print('sentence missing emotions: https://venice.isi.edu/browser/{}'.format(document_id))
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+                start = datetime.datetime.now()
+
+            df = pd.DataFrame(matches)
+            grouped_by_date = df.groupby('datetime').sum()
+
+            min_date = grouped_by_date.index.min()
+            max_date = grouped_by_date.index.max()
+
+            daily_emotion_values = {}
+            cursor = min_date
+            while cursor <= max_date:
+                isodate = cursor.isoformat()
+                if cursor in grouped_by_date.index:
+                    daily_emotion_values[isodate] = grouped_by_date.loc[cursor].to_dict()
+                else:
+                    daily_emotion_values[isodate] = {
+                        'anticipation': 0,
+                        'love': 0,
+                        'joy': 0,
+                        'pessimism': 0,
+                        'optimism': 0,
+                        'sadness': 0,
+                        'disgust': 0,
+                        'anger': 0,
+                        'surprise': 0,
+                        'fear': 0,
+                        'trust': 0,
+                    }
+                cursor += relativedelta(days=1)
+
+            if debug:
+                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(daily_emotion_values), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
 @app.route('/kb/get_daily_mf_values', methods=['GET'])
 def get_daily_mf_values():
 
