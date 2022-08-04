@@ -2785,6 +2785,7 @@ def get_daily_mf_and_emotion_values():
                     'betrayal': 0,
                     'sanctity': 0,
                     'degradation': 0,
+                    'concreteness': 0,
 
                     # imputed emotion values
                     'anticipation': 0,
@@ -2887,6 +2888,168 @@ def get_daily_mf_and_emotion_values():
                         'betrayal': 0,
                         'sanctity': 0,
                         'degradation': 0,
+
+                        # imputed emotion values
+                        'anticipation': 0,
+                        'love': 0,
+                        'joy': 0,
+                        'pessimism': 0,
+                        'optimism': 0,
+                        'sadness': 0,
+                        'disgust': 0,
+                        'anger': 0,
+                        'surprise': 0,
+                        'fear': 0,
+                        'trust': 0,
+                    }
+                cursor += relativedelta(days=1)
+
+            if debug:
+                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(daily_values), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
+@app.route('/kb/get_daily_mf_and_emotion_values_for_node/<string:node>', methods=['GET'])
+def get_daily_mf_and_emotion_values_for_node(node):
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            if match_label_prefixes:
+
+                # create a placeholder with all 0 values
+                placeholder = {
+                    # imputed moral foundation values
+                    'authority': 0,
+                    'subversion': 0,
+                    'fairness': 0,
+                    'cheating': 0,
+                    'care': 0,
+                    'harm': 0,
+                    'loyalty': 0,
+                    'betrayal': 0,
+                    'sanctity': 0,
+                    'degradation': 0,
+
+                    # imputed emotion values
+                    'anticipation': 0,
+                    'love': 0,
+                    'joy': 0,
+                    'pessimism': 0,
+                    'optimism': 0,
+                    'sadness': 0,
+                    'disgust': 0,
+                    'anger': 0,
+                    'surprise': 0,
+                    'fear': 0,
+                    'trust': 0,
+                }
+
+                # get the moral foundation values with dates
+                mf_results = backend.rb_get_moral_foundations_with_p585_for_node(
+                    node=node,
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
+
+                grouped_results = []
+                for result in mf_results:
+                    # make sure we get a (shallow) copy of the empty result obj
+                    formatted_result = placeholder.copy()
+
+                    # format the date and add that to the result object
+                    datetime_str = result[1]
+                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                    datetime_match = re.match(datetime_pattern, result[1])[1]
+                    datetime_iso = parser.isoparse(datetime_match)
+                    formatted_result['datetime'] = datetime_iso
+
+                    # get the correct key/label for the moral foundation score
+                    mf_key = scores_mapping[result[2]]
+                    mf_score = float(result[3])
+
+                    # increase moral foundation value on that date
+                    formatted_result[mf_key] += mf_score
+
+                    # add our formatted result to the group with all results
+                    grouped_results.append(formatted_result)
+
+                # get the identified emotions with dates
+                emotion_results = backend.rb_get_emotions_with_p585_for_node(
+                    node=node,
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
+
+                for result in emotion_results:
+                    # make sure we get a (shallow) copy of the empty result obj
+                    formatted_result = placeholder.copy()
+
+                    datetime_str = result[1]
+                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                    datetime_match = re.match(datetime_pattern, result[1])[1]
+                    datetime_iso = parser.isoparse(datetime_match)
+                    formatted_result['datetime'] = datetime_iso
+
+                    # get the correct key/label for the emotions
+                    emotion_key = emotions_mapping[result[2]]
+
+                    # increase emotion value on that date
+                    formatted_result[emotion_key] += 1
+
+                    # add our formatted result to the group with all results
+                    grouped_results.append(formatted_result)
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+                start = datetime.datetime.now()
+
+            df = pd.DataFrame(grouped_results)
+            grouped_by_date = df.groupby('datetime').sum()
+
+            # imputation part
+            # add empty dicts with 0s for missing dates
+
+            min_date = grouped_by_date.index.min()
+            max_date = grouped_by_date.index.max()
+
+            daily_values = {}
+            cursor = min_date
+            while cursor <= max_date:
+                isodate = cursor.isoformat()
+                if cursor in grouped_by_date.index:
+                    daily_values[isodate] = grouped_by_date.loc[cursor].to_dict()
+                else:
+                    daily_values[isodate] = {
+
+                        # imputed moral foundation values
+                        'authority': 0,
+                        'subversion': 0,
+                        'fairness': 0,
+                        'cheating': 0,
+                        'care': 0,
+                        'harm': 0,
+                        'loyalty': 0,
+                        'betrayal': 0,
+                        'sanctity': 0,
+                        'degradation': 0,
+                        'concreteness': 0,
 
                         # imputed emotion values
                         'anticipation': 0,
