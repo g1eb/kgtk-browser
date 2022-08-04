@@ -495,6 +495,19 @@ class BrowserBackend(object):
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
+    def rb_get_emotions_with_p585_for_node(self, node, limit: int = 20, lang=None, fmt=None):
+        """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
+
+        This search method supports rb_get_kb_query(), which generates a list of
+        candidate nodes. The node label is searched for a complete match, which
+        may or may not be case-insensitive. The search must be fast.
+        """
+
+        query = self.api.RB_GET_EMOTIONS_WITH_P585_FOR_NODE
+
+        return self.execute_query(query, NODE=node, LIMIT=limit, fmt=fmt)
+
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def rb_get_moral_foundations_with_p585(self, limit: int = 20, lang=None, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 

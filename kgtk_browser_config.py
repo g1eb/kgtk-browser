@@ -194,6 +194,44 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
+        self.RB_GET_EMOTIONS_WITH_P585_FOR_NODE = self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585_for_node()'.
+            """,
+            name='RB_GET_EMOTIONS_WITH_P585_FOR_NODE',
+            inputs=('edges'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
+                $edges: (document_id)-[:P31]->(:Q00_venice_doc),
+                $edges: (document_id)-[:P585]->(document_datetime),
+                $edges: (document_id)-[:P00_venice_emo]->(emotion_id)
+            ''',
+            where='''
+                emotion_id in [
+                    'Q00_emotion_anticipation',
+                    'Q00_emotion_love',
+                    'Q00_emotion_joy',
+                    'Q00_emotion_pessimism',
+                    'Q00_emotion_optimism',
+                    'Q00_emotion_sadness',
+                    'Q00_emotion_disgust',
+                    'Q00_emotion_anger',
+                    'Q00_emotion_surprise',
+                    'Q00_emotion_fear',
+                    'Q00_emotion_trust'
+                ] and participant_id=$NODE
+            ''',
+            ret='''
+                document_id,
+                document_datetime,
+                emotion_id
+            ''',
+            limit= "$LIMIT"
+        )
+
         self.RB_GET_MORAL_FOUNDATIONS_WITH_P585 = self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585()'.
