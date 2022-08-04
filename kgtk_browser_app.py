@@ -2806,27 +2806,27 @@ def get_daily_mf_and_emotion_values():
                     limit=match_label_prefixes_limit,
                 )
 
-                results_grouped_by_date = {}
+                grouped_results = []
                 for result in mf_results:
+                    # make sure we get a (shallow) copy of the empty result obj
+                    formatted_result = placeholder.copy()
+
+                    # format the date and add that to the result object
                     datetime_str = result[1]
                     datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
                     datetime_match = re.match(datetime_pattern, result[1])[1]
                     datetime_iso = parser.isoparse(datetime_match)
-
-                    # get the iso formatted date string to use as a key
-                    result_key = datetime_iso.isoformat()
-
-                    # add empty result obj if it is not in the set already
-                    if result_key not in results_grouped_by_date:
-
-                        # make sure we get a (shallow) copy of the original placeholder
-                        results_grouped_by_date[result_key] = placeholder.copy()
+                    formatted_result['datetime'] = datetime_iso
 
                     # get the correct key/label for the moral foundation score
                     mf_key = scores_mapping[result[2]]
                     mf_score = float(result[3])
+
                     # increase moral foundation value on that date
-                    results_grouped_by_date[result_key][mf_key] += mf_score
+                    formatted_result[mf_key] += mf_score
+
+                    # add our formatted result to the group with all results
+                    grouped_results.append(formatted_result)
 
                 # get the identified emotions with dates
                 emotion_results = backend.rb_get_emotions_with_p585(
@@ -2835,43 +2835,44 @@ def get_daily_mf_and_emotion_values():
                 )
 
                 for result in emotion_results:
+                    # make sure we get a (shallow) copy of the empty result obj
+                    formatted_result = placeholder.copy()
+
+                    # format the date and add that to the result object
                     datetime_str = result[1]
                     datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
                     datetime_match = re.match(datetime_pattern, result[1])[1]
                     datetime_iso = parser.isoparse(datetime_match)
-
-                    # get the iso formatted date string to use as a key
-                    result_key = datetime_iso.isoformat()
-
-                    # add empty result obj if it is not in the set already
-                    if result_key not in results_grouped_by_date:
-                        results_grouped_by_date[result_key] = placeholder.copy()
+                    formatted_result['datetime'] = datetime_iso
 
                     # get the correct key/label for the emotions
                     emotion_key = emotions_mapping[result[2]]
+
                     # increase emotion value on that date
-                    results_grouped_by_date[result_key][emotion_key] += 1
+                    formatted_result[emotion_key] += 1
+
+                    # add our formatted result to the group with all results
+                    grouped_results.append(formatted_result)
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
                 start = datetime.datetime.now()
 
-
-            df = pd.DataFrame(results_grouped_by_date)
-            df = df.transpose()
+            df = pd.DataFrame(grouped_results)
+            grouped_by_date = df.groupby('datetime').sum()
 
             # imputation part
             # add empty dicts with 0s for missing dates
 
-            min_date = parser.isoparse(df.index.min())
-            max_date = parser.isoparse(df.index.max())
+            min_date = grouped_by_date.index.min()
+            max_date = grouped_by_date.index.max()
 
             daily_values = {}
             cursor = min_date
             while cursor <= max_date:
                 isodate = cursor.isoformat()
-                if cursor in df.index:
-                    daily_values[isodate] = df.loc[cursor].to_dict()
+                if cursor in grouped_by_date.index:
+                    daily_values[isodate] = grouped_by_date.loc[cursor].to_dict()
                 else:
                     daily_values[isodate] = {
 
