@@ -2784,15 +2784,18 @@ def get_mf_scores_by_date_for_node(node):
                 start = datetime.datetime.now()
 
             matches = []
-            items_seen: typing.Set[str] = set()
-
             if match_label_prefixes:
-                results = backend.rb_get_moral_foundations_with_p585_for_node(node=node,
-                                                                            lang=lang,
-                                                                            limit=match_label_prefixes_limit)
+                results = backend.rb_get_moral_foundations_with_p585_for_node(
+                    node=node,
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
 
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+                if not results:
+                    return flask.jsonify({}), 200
 
                 results_grouped_by_sentence = {}
                 for result in results:
@@ -2872,11 +2875,16 @@ def get_mf_scores_and_concreteness_by_date():
             items_seen: typing.Set[str] = set()
 
             if match_label_prefixes:
-                results = backend.rb_get_moral_foundations_and_concreteness_with_p585(lang=lang,
-                                                                    limit=match_label_prefixes_limit)
+                results = backend.rb_get_moral_foundations_and_concreteness_with_p585(
+                    lang=lang,
+                    limit=match_label_prefixes_limit,
+                )
 
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+                if not results:
+                    return flask.jsonify({}), 200
 
                 results_grouped_by_sentence = {}
                 for result in results:
