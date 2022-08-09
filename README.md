@@ -6,9 +6,10 @@ Download the codebase and setup the python environment. In a terminal run the fo
 git clone https://github.com/usc-isi-i2/kgtk-browser
 cd kgtk-browser
 git checkout dev
-conda create -n kgtk-env python=3.9
+conda create -n kgtk-env python=3.9.7
 conda activate kgtk-env
 pip install -r requirements.txt
+pip install -e git+https://github.com/usc-isi-i2/kgtk.git@ee053b021d83c4d74797a24e98c25b71c6b852c3#egg=kgtk
 ```
 
 ## Prerequisites
