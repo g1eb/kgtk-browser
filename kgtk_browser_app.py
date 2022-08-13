@@ -217,6 +217,7 @@ def get_info():
     return flask.jsonify(info), 200
 
 
+# DEPRECATED: left over from the original browser
 @app.route('/browser', methods=['GET'])
 @app.route('/browser/<string:node>', methods=['GET'])
 def rb_get_kb(node=None):
@@ -1877,6 +1878,9 @@ def rb_get_kb_item():
     """
     args = flask.request.args
     item: str = args.get('id')
+
+    # TODO: check if there is no item, return error 404
+
     lang: str = args.get("lang", default=app.config['DEFAULT_LANGUAGE'])
     proplist_max_len: int = args.get('proplist_max_len', type=int,
                                      default=app.config['PROPLIST_MAX_LEN'])
@@ -1913,6 +1917,7 @@ def rb_get_kb_item():
                            verbose=verbose)
 
 
+# DEPRECATED: left over from the ringgard browser era, to be removed
 @app.route('/kb/item/<string:item>', methods=['GET'])
 def rb_get_kb_named_item(item):
     """This is the API call to return the full information for an item wrapped in a browser
