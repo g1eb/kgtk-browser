@@ -26,8 +26,11 @@ RUN pip install -r /src/requirements.txt
 
 RUN pip install -e git+https://github.com/usc-isi-i2/kgtk.git@ee053b021d83c4d74797a24e98c25b71c6b852c3#egg=kgtk
 
-COPY kgtk_browser_config.py /src/
 COPY kgtk_browser_app.py /src/
+COPY sync_properties_sort_metadata.json /src/
+COPY kgtk_browser_sorting_metadata.tsv /src/
+COPY kgtk_browser_sorting_metadata_supplementary.tsv /src/
+COPY wikidata_language_mapping.json /src/
 COPY browser/backend/ /src/browser/backend/
 COPY post_deploy.sh /src/
 COPY venice/ /src/venice/
@@ -39,7 +42,7 @@ ENV FLASK_ENV=$FLASK_ENV
 ARG FLASK_APP=kgtk_browser_app.py
 ENV FLASK_APP=$FLASK_APP
 
-ARG KGTK_BROWSER_CONFIG=kgtk_browser_config.py
+ARG KGTK_BROWSER_CONFIG=browser/backend/kgtk_browser_config.py
 ENV KGTK_BROWSER_CONFIG=$KGTK_BROWSER_CONFIG
 
 WORKDIR /src

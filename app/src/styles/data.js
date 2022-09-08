@@ -24,9 +24,25 @@ const useStyles = makeStyles(theme => ({
   aliases: {
     color: '#999',
   },
+  abstract: {
+    color: '#7896b7'
+  },
   heading: {
     color: '#333',
     fontWeight: 'bold',
+    '&.smaller': {
+      fontSize: '14px'
+    }
+  },
+  instance:{
+    color: '#333'
+  },
+  subclassStar:{
+    color: '#333'
+  },
+  instanceStar:{
+    color: '#333',
+    fontWeight: "bold"
   },
   graphIcon: {
     width: theme.spacing(3),
@@ -82,6 +98,15 @@ const useStyles = makeStyles(theme => ({
     '&.item': {
       color: '#de6720',
     },
+    '&.wikidata' :{
+      color: '#66cdaa ',
+      fontWeight: 'bold',
+      fontSize: '18px'
+    }
+  },
+  wikipediaLink: {
+    color: '#468499',
+    marginLeft: theme.spacing(0),
   },
   text: {
     display: 'inline-block',
@@ -103,6 +128,15 @@ const useStyles = makeStyles(theme => ({
   lang: {
     color: '#777',
     marginLeft: theme.spacing(1),
+  },
+    wikiLang: {
+      color: '#696969',
+      fontWeight: 'bolder',
+      '&.wikiLabel' : {
+        color: '#cccccc',
+        fontWeight: 'lighter'
+      }
+
   },
   row: {
     paddingTop: theme.spacing(0),
@@ -132,6 +166,19 @@ const useStyles = makeStyles(theme => ({
     left: 'calc(50% - 25px)',
     color: '#de6720',
     zIndex: 99999,
+  },
+  arrow: {
+    transform: 'scaleX(-1)',
+    marginTop: '-2px',
+  },
+  pagination: {
+    marginTop: '0.5em',
+    marginBottom: '1em',
+    '& .smaller': {
+      padding: '0 3px',
+      fontSize: '12px',
+      lineHeight: '28px',
+    },
   },
 }))
 
