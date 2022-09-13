@@ -1025,7 +1025,7 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
-    def RB_GET_MORAL_FOUNDATIONS_WITH_P585(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+    def RB_GET_MORAL_FOUNDATIONS_WITH_P585(self, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585()'.

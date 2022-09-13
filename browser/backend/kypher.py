@@ -445,7 +445,7 @@ class BrowserBackend(object):
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
     def venice_document(self, document_id):
-        query = self.api.VENICE_DOCUMENT
+        query = self.api.VENICE_DOCUMENT(document_id)
         return self.execute_query(query, document_id=document_id)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
@@ -488,7 +488,7 @@ class BrowserBackend(object):
         return self.execute_query(query, NODE=node, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
-    def rb_get_moral_foundations_with_p585(self, limit: int = 20, lang=None, fmt=None):
+    def rb_get_moral_foundations_with_p585(self, limit: int = 20, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
         This search method supports rb_get_kb_query(), which generates a list of
@@ -496,7 +496,7 @@ class BrowserBackend(object):
         may or may not be case-insensitive. The search must be fast.
         """
 
-        query = self.api.RB_GET_MORAL_FOUNDATIONS_WITH_P585
+        query = self.api.RB_GET_MORAL_FOUNDATIONS_WITH_P585(limit)
 
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
