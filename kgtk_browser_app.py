@@ -36,7 +36,6 @@ from kgtk.kgtkformat import KgtkFormat
 from kgtk.value.kgtkvalue import KgtkValue, KgtkValueFields
 from kgtk.visualize.visualize_api import KgtkVisualize
 
-from kgtk_browser_config import KypherAPIObject
 from browser.backend.kypher_queries import KypherAPIObject
 
 
@@ -3812,7 +3811,7 @@ def get_acled_forecast(filename):
 
 
 if __name__ == '__main__':
-    os.environ['KGTK_BROWSER_CONFIG'] = './kgtk_browser_config.py'
+    os.environ['KGTK_BROWSER_CONFIG'] = './browser/backend/kgtk_browser_config.py'
     k_api = KypherAPIObject()
     backend = kybe.BrowserBackend(api=k_api)
     backend.set_app_config(app)
