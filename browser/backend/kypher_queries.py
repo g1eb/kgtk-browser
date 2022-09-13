@@ -865,3 +865,276 @@ class KypherAPIObject(object):
                 'n1label as node1_label',
             limit=f"{limit}"
         )
+
+    def VENICE_DOCUMENT(self, document_id: str) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Show the full document as it appears in the KG
+            """,
+            name='VENICE_DOCUMENT',
+            inputs=('edges', 'label'),
+            maxcache=MAX_CACHE_SIZE * 100,
+            match='''
+                $edges: (document_id)-[:P31]->(document_instance_of),
+                $edges: (document_id)-[:P00_venice_document_text]->(document_text),
+                $label: (document_id)-[:label]->(document_label)
+            ''',
+            opt1='''
+                $edges: (document_id)-[:P00_venice_contain_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P31]->(sentence_instance_of),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[:P00_venice_data_source]->(sentence_data_source),
+                $label: (sentence_id)-[:label]->(sentence_text)
+            ''',
+            opt2='''
+                $edges: (document_id)-[:P00_venice_emo]->(emotion_id),
+                $label: (emotion_id)-[:label]->(emotion_text)
+            ''',
+            opt3='''
+                $edges: (document_id)-[:P585]->(document_datetime)
+            ''',
+            where='''
+                document_id=$document_id
+            ''',
+            ret='''
+                document_id,
+                document_text,
+                document_label,
+                document_instance_of,
+                document_datetime,
+                sentence_id,
+                sentence_text,
+                sentence_instance_of,
+                sentence_data_source,
+                sentence_datetime,
+                emotion_id,
+                emotion_text
+            '''
+        )
+
+    def RB_GET_EVENTS_AND_SCORES_BY_DATE(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_events_and_scores_by_date()'.
+            """,
+            name='RB_GET_EVENTS_AND_SCORES_BY_DATE',
+            inputs=('edges', 'label', 'qualifiers'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[quality_type]->(quality_id),
+                $qualifiers: (quality_type)-[]->(quality_score)
+            ''',
+            where='''
+                quality_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation',
+                    'Q00_concreteness'
+                ]
+            ''',
+            ret='''
+                sentence_id,
+                sentence_datetime,
+                quality_id,
+                quality_score
+            ''',
+            limit= "$LIMIT"
+        )
+
+    def RB_GET_EMOTIONS_WITH_P585(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585()'.
+            """,
+            name='RB_GET_EMOTIONS_WITH_P585',
+            inputs=('edges'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (document_id)-[:P31]->(:Q00_venice_doc),
+                $edges: (document_id)-[:P585]->(document_datetime),
+                $edges: (document_id)-[:P00_venice_emo]->(emotion_id)
+            ''',
+            where='''
+                emotion_id in [
+                    'Q00_emotion_anticipation',
+                    'Q00_emotion_love',
+                    'Q00_emotion_joy',
+                    'Q00_emotion_pessimism',
+                    'Q00_emotion_optimism',
+                    'Q00_emotion_sadness',
+                    'Q00_emotion_disgust',
+                    'Q00_emotion_anger',
+                    'Q00_emotion_surprise',
+                    'Q00_emotion_fear',
+                    'Q00_emotion_trust'
+                ]
+            ''',
+            ret='''
+                document_id,
+                document_datetime,
+                emotion_id
+            ''',
+            limit= "$LIMIT"
+        )
+
+    def RB_GET_EMOTIONS_WITH_P585_FOR_NODE(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585_for_node()'.
+            """,
+            name='RB_GET_EMOTIONS_WITH_P585_FOR_NODE',
+            inputs=('edges'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
+                $edges: (document_id)-[:P31]->(:Q00_venice_doc),
+                $edges: (document_id)-[:P585]->(document_datetime),
+                $edges: (document_id)-[:P00_venice_emo]->(emotion_id)
+            ''',
+            where='''
+                emotion_id in [
+                    'Q00_emotion_anticipation',
+                    'Q00_emotion_love',
+                    'Q00_emotion_joy',
+                    'Q00_emotion_pessimism',
+                    'Q00_emotion_optimism',
+                    'Q00_emotion_sadness',
+                    'Q00_emotion_disgust',
+                    'Q00_emotion_anger',
+                    'Q00_emotion_surprise',
+                    'Q00_emotion_fear',
+                    'Q00_emotion_trust'
+                ] and participant_id=$NODE
+            ''',
+            ret='''
+                document_id,
+                document_datetime,
+                emotion_id
+            ''',
+            limit= "$LIMIT"
+        )
+
+    def RB_GET_MORAL_FOUNDATIONS_WITH_P585(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585()'.
+            """,
+            name='RB_GET_MORAL_FOUNDATIONS_WITH_P585',
+            inputs=('edges', 'qualifiers'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[quality_type]->(quality_id),
+                $qualifiers: (quality_type)-[]->(quality_score)
+            ''',
+            where='''
+                quality_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation'
+                ]
+            ''',
+            ret='''
+                sentence_id,
+                sentence_datetime,
+                quality_id,
+                quality_score
+            ''',
+            limit= "$LIMIT"
+        )
+
+    def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585_for_node()'.
+            """,
+            name='RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE',
+            inputs=('edges', 'qualifiers'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[quality_type]->(quality_id),
+                $qualifiers: (quality_type)-[]->(quality_score)
+            ''',
+            where='''
+                quality_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation'
+                ] and participant_id=$NODE
+            ''',
+            ret='''
+                sentence_id,
+                sentence_datetime,
+                quality_id,
+                quality_score
+            ''',
+            limit= "$LIMIT"
+        )
+
+    def RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_and_concreteness_with_p585()'.
+            """,
+            name='RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585',
+            inputs=('edges', 'qualifiers'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[quality_type]->(quality_id),
+                $qualifiers: (quality_type)-[]->(quality_score)
+            ''',
+            where='''
+                quality_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation',
+                    'Q00_concreteness'
+                ]
+            ''',
+            ret='''
+                sentence_id,
+                sentence_datetime,
+                quality_id,
+                quality_score
+            ''',
+            limit= "$LIMIT"
+        )
