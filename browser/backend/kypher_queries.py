@@ -912,7 +912,7 @@ class KypherAPIObject(object):
             '''
         )
 
-    def RB_GET_EVENTS_AND_SCORES_BY_DATE(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+    def RB_GET_EVENTS_AND_SCORES_BY_DATE(self, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_events_and_scores_by_date()'.
@@ -950,7 +950,7 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
-    def RB_GET_EMOTIONS_WITH_P585(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+    def RB_GET_EMOTIONS_WITH_P585(self,limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585()'.
@@ -986,7 +986,7 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
-    def RB_GET_EMOTIONS_WITH_P585_FOR_NODE(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+    def RB_GET_EMOTIONS_WITH_P585_FOR_NODE(self, node: str,limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585_for_node()'.
@@ -1062,7 +1062,7 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
-    def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+    def RB_GET_MORAL_FOUNDATIONS_WITH_P585_FOR_NODE(self, node: str, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_with_p585_for_node()'.
@@ -1101,7 +1101,7 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
-    def RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585(self, node: str, lang: str, limit: int) -> kapi.KypherQuery:
+    def RB_GET_MORAL_FOUNDATIONS_AND_CONCRETENESS_WITH_P585(self, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_moral_foundations_and_concreteness_with_p585()'.

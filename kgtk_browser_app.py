@@ -2657,7 +2657,7 @@ def get_events_and_scores_by_date():
                 start = datetime.datetime.now()
 
             if match_label_prefixes:
-                results = backend.rb_get_events_and_scores_by_date(lang=lang, limit=match_label_prefixes_limit)
+                results = backend.rb_get_events_and_scores_by_date(limit=match_label_prefixes_limit)
 
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
@@ -2791,9 +2791,7 @@ def get_daily_emotion_values():
             matches = []
 
             if match_label_prefixes:
-                results = backend.rb_get_emotions_with_p585(
-                    lang=lang,
-                    limit=match_label_prefixes_limit,
+                results = backend.rb_get_emotions_with_p585(limit=match_label_prefixes_limit
                 )
 
                 if verbose:
@@ -2904,7 +2902,6 @@ def get_daily_emotion_values_for_node(node):
             if match_label_prefixes:
                 results = backend.rb_get_emotions_with_p585_for_node(
                     node=node,
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3015,7 +3012,6 @@ def get_daily_mf_values():
 
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585(
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3126,7 +3122,6 @@ def get_daily_mf_values_for_node(node):
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585_for_node(
                     node=node,
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3268,7 +3263,6 @@ def get_daily_mf_and_emotion_values():
 
                 # get the moral foundation values with dates
                 mf_results = backend.rb_get_moral_foundations_with_p585(
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3296,7 +3290,6 @@ def get_daily_mf_and_emotion_values():
 
                 # get the identified emotions with dates
                 emotion_results = backend.rb_get_emotions_with_p585(
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3429,7 +3422,6 @@ def get_daily_mf_and_emotion_values_for_node(node):
                 # get the moral foundation values with dates
                 mf_results = backend.rb_get_moral_foundations_with_p585_for_node(
                     node=node,
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3458,7 +3450,6 @@ def get_daily_mf_and_emotion_values_for_node(node):
                 # get the identified emotions with dates
                 emotion_results = backend.rb_get_emotions_with_p585_for_node(
                     node=node,
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3561,8 +3552,8 @@ def get_mf_scores_by_date():
             matches = []
 
             if match_label_prefixes:
-                results = backend.rb_get_moral_foundations_with_p585(lang=lang,
-                                                                    limit=match_label_prefixes_limit)
+                results = backend.rb_get_moral_foundations_with_p585(
+							  limit=match_label_prefixes_limit)
 
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
@@ -3645,7 +3636,6 @@ def get_mf_scores_by_date_for_node(node):
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585_for_node(
                     node=node,
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
@@ -3734,7 +3724,6 @@ def get_mf_scores_and_concreteness_by_date():
 
             if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_and_concreteness_with_p585(
-                    lang=lang,
                     limit=match_label_prefixes_limit,
                 )
 
