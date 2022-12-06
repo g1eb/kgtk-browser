@@ -1049,6 +1049,9 @@ P1343	Psort_criterion	value	P1343-Psort_criterion-cd4240
 P1344	datatype	wikibase-item	P1344-datatype-643cc9
 P1344	Psort_order	asc	P1344-Psort_order-d68d3f
 P1344	Psort_criterion	value	P1344-Psort_criterion-cd4240
+P1344-Psort_criterion-cd4240	Psort_qualifier	P585	P1344-Psort_criterion-cd4240-Psort_qualifier-P585
+P1344-Psort_criterion-cd4240	Psort_order	desc	P1344-Psort_criterion-cd4240-Psort_order-97864e
+P1344-Psort_criterion-cd4240	datatype	time	P1344-Psort_criterion-cd4240-datatype-336074
 P1345	datatype	quantity	P1345-datatype-1a7b30
 P1345	Psort_order	asc	P1345-Psort_order-d68d3f
 P1345	Psort_criterion	value	P1345-Psort_criterion-cd4240
