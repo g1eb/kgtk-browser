@@ -3808,4 +3808,4 @@ if __name__ == '__main__':
 
     p = multiprocessing.Pool(int(multiprocessing.cpu_count()/4))
 
-    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
+    app.run(host='0.0.0.0', port=5006, debug=False, use_reloader=False)
