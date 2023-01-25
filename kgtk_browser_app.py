@@ -3798,6 +3798,53 @@ def get_mf_scores_and_concreteness_by_date():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/get_messages', methods=['GET'])
+def get_messages():
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            matches = []
+            items_seen: typing.Set[str] = set()
+
+            if match_label_prefixes:
+                results = backend.rb_get_messages(
+                    limit=match_label_prefixes_limit,
+                )
+
+                if verbose:
+                    print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+                if not results:
+                    return flask.jsonify({}), 200
+
+                messages = [message[0] for message in results]
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+                start = datetime.datetime.now()
+
+            if debug:
+                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(messages), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
 @app.route('/kb/get_acled_forecast/<string:filename>', methods=['GET'])
 def get_acled_forecast(filename):
 
