@@ -38,6 +38,12 @@ from kgtk.visualize.visualize_api import KgtkVisualize
 
 from browser.backend.kypher_queries import KypherAPIObject
 
+import logging
+
+# set the desired log level of the server
+log = logging.getLogger('werkzeug')
+log.setLevel(40)
+
 
 # map emotion Qnode ids to labels
 emotions_mapping = {
@@ -174,7 +180,7 @@ app.config['PROPERTY_SKIP_NUM'] = DEFAULT_PROPERTY_SKIP_NUM
 app.config['PROPERTY_LIMIT_NUM'] = DEFAULT_PROPERTY_LIMIT_NUM
 
 kgtk_backends = {}
-print('loading kgtk api..')
+logging.info('loading kgtk api..')
 for i in range(app.config['KYPHER_OBJECTS_NUM']):
     k_api = KypherAPIObject()
     _api = kybe.BrowserBackend(api=k_api)
