@@ -1149,7 +1149,11 @@ class KypherAPIObject(object):
             maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (document_id)-[:P31]->(:Q00_venice_doc),
+                $edges: (document_id)-[:P00_venice_data_source]->(document_type),
                 $edges: (document_id)-[:P00_venice_document_text]->(document_text)
+            ''',
+            where='''
+                document_type = "telegram"
             ''',
             ret='''
                 document_text
