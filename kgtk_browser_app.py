@@ -12,6 +12,7 @@ import math
 import os
 import os.path
 import json
+import ast
 
 import pandas as pd
 
@@ -3830,7 +3831,7 @@ def get_messages():
                 if not results:
                     return flask.jsonify({}), 200
 
-                messages = [message[0] for message in results]
+                messages = [ast.literal_eval(messages[0]) for message in results]
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
