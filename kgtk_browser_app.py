@@ -3802,47 +3802,35 @@ def get_mf_scores_and_concreteness_by_date():
 @app.route('/kb/get_messages', methods=['GET'])
 def get_messages():
 
+    # check request args
     args = flask.request.args
-    lang = args.get("lang", default="en")
-
     debug = args.get("debug", default=False, type=rb_is_true)
     verbose = args.get("verbose", default=False, type=rb_is_true)
-    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
-    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=999999999999, type=int)
-    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
+
         with get_backend() as backend:
 
-            if debug:
-                start = datetime.datetime.now()
+            results = backend.rb_get_messages(
+                limit=9999999999999,
+            )
 
-            matches = []
-            items_seen: typing.Set[str] = set()
+            if not results:
+                return flask.jsonify({}), 200
 
-            if match_label_prefixes:
-                results = backend.rb_get_messages(
-                    limit=match_label_prefixes_limit,
-                )
-
-                if verbose:
-                    print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
-
-                if not results:
-                    return flask.jsonify({}), 200
-
-                messages = [ast.literal_eval(messages[0]) for message in results]
-
-            if debug:
-                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
-                start = datetime.datetime.now()
-
-            if debug:
-                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+            messages = []
+            for result in results:
+                if len(result) and result[0]:
+                    try:
+                        message = ast.literal_eval(result[0])
+                        messages.append(message)
+                    except Exception as e:
+                        logging.error(e)
 
             return flask.jsonify(messages), 200
+
     except Exception as e:
-        print('ERROR: ' + str(e))
+        logging.error('ERROR: ' + str(e))
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
