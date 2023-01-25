@@ -526,6 +526,19 @@ class BrowserBackend(object):
 
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
+    def rb_get_messages(self, limit: int = 20, fmt=None):
+        """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
+
+        This search method supports rb_get_kb_query(), which generates a list of
+        candidate nodes. The node label is searched for a complete match, which
+        may or may not be case-insensitive. The search must be fast.
+        """
+
+        query = self.api.RB_GET_MESSAGES(limit)
+
+        return self.execute_query(query, LIMIT=limit, fmt=fmt)
+
     def rb_get_node_edges(self, node, lang=None, images=False, fanouts=False, fmt=None, limit: int = 10000,
                           lc_properties: str = None):
         """Retrieve all edges that have 'node' as their node1.

@@ -1138,3 +1138,21 @@ class KypherAPIObject(object):
             ''',
             limit= "$LIMIT"
         )
+
+    def RB_GET_MESSAGES(self, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_messages()'.
+            """,
+            name='RB_GET_MESSAGES',
+            inputs=('edges'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (document_id)-[:P31]->(:Q00_venice_doc),
+                $edges: (document_id)-[:P00_venice_document_text]->(document_text)
+            ''',
+            ret='''
+                document_text
+            ''',
+            limit= "$LIMIT"
+        )
