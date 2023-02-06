@@ -3848,6 +3848,16 @@ if __name__ == '__main__':
     backend = kybe.BrowserBackend(api=k_api)
     backend.set_app_config(app)
 
-    p = multiprocessing.Pool(int(multiprocessing.cpu_count()/4))
+    p = multiprocessing.Pool(int(multiprocessing.cpu_count() / 4))
+
+    if 'DEVELOPMENT' in os.environ and os.environ['DEVELOPMENT']:
+        log = logging.getLogger('werkzeug')
+        log.setLevel(0)
+
+        app.run(host='0.0.0.0', port=5006, debug=True, use_reloader=True)
+
+    # send all error level logs to a separate file
+    logging.basicConfig(filename='performance_evaluation.log', level=logging.ERROR)
+    logger = logging.getLogger('perf')
 
     app.run(host='0.0.0.0', port=5006, debug=False, use_reloader=False)
