@@ -48,17 +48,17 @@ log.setLevel(40)
 
 # map emotion Qnode ids to labels
 emotions_mapping = {
-    'Q00_emotion_anticipation': 'anticipation',
-    'Q00_emotion_love': 'love',
-    'Q00_emotion_joy': 'joy',
-    'Q00_emotion_pessimism': 'pessimism',
-    'Q00_emotion_optimism': 'optimism',
-    'Q00_emotion_sadness': 'sadness',
-    'Q00_emotion_disgust': 'disgust',
-    'Q00_emotion_anger': 'anger',
-    'Q00_emotion_surprise': 'surprise',
-    'Q00_emotion_fear': 'fear',
-    'Q00_emotion_trust': 'trust',
+    'Q00_anticipation': 'anticipation',
+    'Q00_love': 'love',
+    'Q00_joy': 'joy',
+    'Q00_pessimism': 'pessimism',
+    'Q00_optimism': 'optimism',
+    'Q00_sadness': 'sadness',
+    'Q00_disgust': 'disgust',
+    'Q00_anger': 'anger',
+    'Q00_surprise': 'surprise',
+    'Q00_fear': 'fear',
+    'Q00_trust': 'trust',
 }
 
 
