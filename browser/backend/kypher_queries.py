@@ -956,32 +956,34 @@ class KypherAPIObject(object):
             Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585()'.
             """,
             name='RB_GET_EMOTIONS_WITH_P585',
-            inputs=('edges'),
+            inputs=('edges', 'qualifiers'),
             maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (document_id)-[:P31]->(:Q00_venice_doc),
                 $edges: (document_id)-[:P585]->(document_datetime),
-                $edges: (document_id)-[:P00_venice_emo]->(emotion_id)
+                $edges: (document_id)-[quality_type]->(emotion_id),
+                $qualifiers: (quality_type)-[:P1181]->(emotion_score)
             ''',
             where='''
                 emotion_id in [
-                    'Q00_emotion_anticipation',
-                    'Q00_emotion_love',
-                    'Q00_emotion_joy',
-                    'Q00_emotion_pessimism',
-                    'Q00_emotion_optimism',
-                    'Q00_emotion_sadness',
-                    'Q00_emotion_disgust',
-                    'Q00_emotion_anger',
-                    'Q00_emotion_surprise',
-                    'Q00_emotion_fear',
-                    'Q00_emotion_trust'
+                    'Q00_anticipation',
+                    'Q00_love',
+                    'Q00_joy',
+                    'Q00_pessimism',
+                    'Q00_optimism',
+                    'Q00_sadness',
+                    'Q00_disgust',
+                    'Q00_anger',
+                    'Q00_surprise',
+                    'Q00_fear',
+                    'Q00_trust'
                 ]
             ''',
             ret='''
                 document_id,
                 document_datetime,
-                emotion_id
+                emotion_id,
+                emotion_score
             ''',
             limit= "$LIMIT"
         )
@@ -992,7 +994,7 @@ class KypherAPIObject(object):
             Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585_for_node()'.
             """,
             name='RB_GET_EMOTIONS_WITH_P585_FOR_NODE',
-            inputs=('edges'),
+            inputs=('edges', 'qualifiers'),
             maxcache=MAX_CACHE_SIZE * 10000,
             match='''
                 $edges: (participant_id)-[:P1344]->(event_id),
@@ -1000,27 +1002,29 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
                 $edges: (document_id)-[:P31]->(:Q00_venice_doc),
                 $edges: (document_id)-[:P585]->(document_datetime),
-                $edges: (document_id)-[:P00_venice_emo]->(emotion_id)
+                $edges: (document_id)-[quality_type]->(emotion_id),
+                $qualifiers: (quality_type)-[:P1181]->(emotion_score)
             ''',
             where='''
                 emotion_id in [
-                    'Q00_emotion_anticipation',
-                    'Q00_emotion_love',
-                    'Q00_emotion_joy',
-                    'Q00_emotion_pessimism',
-                    'Q00_emotion_optimism',
-                    'Q00_emotion_sadness',
-                    'Q00_emotion_disgust',
-                    'Q00_emotion_anger',
-                    'Q00_emotion_surprise',
-                    'Q00_emotion_fear',
-                    'Q00_emotion_trust'
+                    'Q00_anticipation',
+                    'Q00_love',
+                    'Q00_joy',
+                    'Q00_pessimism',
+                    'Q00_optimism',
+                    'Q00_sadness',
+                    'Q00_disgust',
+                    'Q00_anger',
+                    'Q00_surprise',
+                    'Q00_fear',
+                    'Q00_trust'
                 ] and participant_id=$NODE
             ''',
             ret='''
                 document_id,
                 document_datetime,
-                emotion_id
+                emotion_id,
+                emotion_score
             ''',
             limit= "$LIMIT"
         )
