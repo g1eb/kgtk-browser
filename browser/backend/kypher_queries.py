@@ -924,7 +924,7 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
                 $edges: (sentence_id)-[quality_type]->(quality_id),
-                $qualifiers: (quality_type)-[]->(quality_score)
+                $qualifiers: (quality_type)-[:P1181]->(quality_score)
             ''',
             where='''
                 quality_id in [
@@ -1041,7 +1041,7 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
                 $edges: (sentence_id)-[quality_type]->(quality_id),
-                $qualifiers: (quality_type)-[]->(quality_score)
+                $qualifiers: (quality_type)-[:P1181]->(quality_score)
             ''',
             where='''
                 quality_id in [
@@ -1080,7 +1080,7 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
                 $edges: (sentence_id)-[quality_type]->(quality_id),
-                $qualifiers: (quality_type)-[]->(quality_score)
+                $qualifiers: (quality_type)-[:P1181]->(quality_score)
             ''',
             where='''
                 quality_id in [
@@ -1117,7 +1117,7 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
                 $edges: (sentence_id)-[quality_type]->(quality_id),
-                $qualifiers: (quality_type)-[]->(quality_score)
+                $qualifiers: (quality_type)-[:P1181]->(quality_score)
             ''',
             where='''
                 quality_id in [
