@@ -2825,7 +2825,8 @@ def get_daily_emotion_values():
                     # get the correct key/label for the emotions
                     emotion_key = emotions_mapping[result[2]]
                     if emotion_key not in results_grouped_by_document[document_id]:
-                        results_grouped_by_document[document_id][emotion_key] = 1
+                        emotion_score = float(result[3])
+                        results_grouped_by_document[document_id][emotion_key] = emotion_score
 
                 for document_id, values in results_grouped_by_document.items():
                     try:
@@ -2937,7 +2938,9 @@ def get_daily_emotion_values_for_node(node):
                     # get the correct key/label for the emotions
                     emotion_key = emotions_mapping[result[2]]
                     if emotion_key not in results_grouped_by_document[document_id]:
-                        results_grouped_by_document[document_id][emotion_key] = 1
+                        emotion_score = float(result[3])
+                        results_grouped_by_document[document_id][emotion_key] = emotion_score
+
 
                 for document_id, values in results_grouped_by_document.items():
                     try:
@@ -3316,9 +3319,10 @@ def get_daily_mf_and_emotion_values():
 
                     # get the correct key/label for the emotions
                     emotion_key = emotions_mapping[result[2]]
+                    emotion_score = float(result[3])
 
                     # increase emotion value on that date
-                    formatted_result[emotion_key] += 1
+                    formatted_result[emotion_key] += emotion_score
 
                     # add our formatted result to the group with all results
                     grouped_results.append(formatted_result)
@@ -3475,9 +3479,10 @@ def get_daily_mf_and_emotion_values_for_node(node):
 
                     # get the correct key/label for the emotions
                     emotion_key = emotions_mapping[result[2]]
+                    emotion_score = float(result[3])
 
                     # increase emotion value on that date
-                    formatted_result[emotion_key] += 1
+                    formatted_result[emotion_key] += emotion_score
 
                     # add our formatted result to the group with all results
                     grouped_results.append(formatted_result)
