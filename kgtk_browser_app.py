@@ -2799,7 +2799,8 @@ def get_daily_emotion_values():
             matches = []
 
             if match_label_prefixes:
-                results = backend.rb_get_emotions_with_p585(limit=match_label_prefixes_limit
+                results = backend.rb_get_emotions_with_p585(
+                    limit=match_label_prefixes_limit
                 )
 
                 if verbose:
@@ -2908,6 +2909,7 @@ def get_daily_emotion_values_for_node(node):
             matches = []
 
             if match_label_prefixes:
+
                 results = backend.rb_get_emotions_with_p585_for_node(
                     node=node,
                     limit=match_label_prefixes_limit,
