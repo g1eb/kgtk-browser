@@ -30,6 +30,27 @@ def read_sorting_metadata_ajax(metadata_file, metadata_supplementary_file):
     return sorting_metadata
 
 
+def read_url_formatter_templates(url_formatter_template_file: str) -> dict:
+    url_formatter_template_dict = {}
+    kr: KgtkReader = KgtkReader.open(Path(url_formatter_template_file),
+                                     error_file=sys.stderr,
+                                     mode=KgtkReaderMode.EDGE
+                                     )
+    node1_idx = kr.column_name_map['node1']
+    node2_idx = kr.column_name_map['node2']
+
+    for row in kr:
+        node1 = row[node1_idx]
+        node2 = row[node2_idx]
+        if node1 not in url_formatter_template_dict:
+            # print(node1, node2, url_formatter_template_dict[node1])
+            # raise Exception('Duplicate url formatter template')
+            url_formatter_template_dict[node1] = []
+        url_formatter_template_dict[node1].append(node2)
+
+    return url_formatter_template_dict
+
+
 def read_metadata_file(metadata_file):
     kr: KgtkReader = KgtkReader.open(Path(metadata_file),
                                      error_file=sys.stderr,
@@ -93,7 +114,7 @@ RED_EDGE_HEX = '#CD2626'
 BLUE_EDGE_HEX = '#1874CD'
 
 LOG_LEVEL = 0
-INDEX_MODE = 'auto'
+INDEX_MODE = 'none'
 MAX_RESULTS = 10000
 MAX_CACHE_SIZE = 1000
 DEFAULT_LANGUAGE = 'en'
@@ -121,6 +142,11 @@ KG_INSTANCE_COUNT_STAR = 'Pinstance_count_star'
 KG_SUBCLASS_COUNT_STAR = 'Psubclass_count_star'
 KG_HIDE_PROPERTIES_RELATED_ITEMS = ["Pproperty_domain"]
 KG_WIKIPEDIA_URL_LABEL = 'wikipedia_sitelink'
+KG_SUBCLASS_LABEL = "P279"
+KG_P31P279STAR_LABEL = "P31P279star"
+
+MATCH_LABEL_IS_CLASS = False
+MATCH_LABEL_INSTANCE_OF = None
 
 # number of parallel kypher api objects
 KYPHER_OBJECTS_NUM = 5
@@ -131,6 +157,7 @@ PROPERTY_VALUES_COUNT_LIMIT: int = 10
 
 KGTK_BROWSER_SORTING_METADATA = 'kgtk_browser_sorting_metadata.tsv'
 KGTK_BROWSER_SORTING_METADATA_SUPPLEMENTARY = 'kgtk_browser_sorting_metadata_supplementary.tsv'
+KGTK_URL_FORMATTER_TEMPLATES_FILE = 'formatter_url_templates.tsv.gz'
 
 PROPERTIES_SORT_METADATA = json.load(open('sync_properties_sort_metadata.json'))
 SYNC_PROPERTIES_SORT_METADATA = PROPERTIES_SORT_METADATA['sync_properties']
@@ -138,3 +165,5 @@ AJAX_PROPERTIES_SORT_METADATA = read_sorting_metadata_ajax(KGTK_BROWSER_SORTING_
                                                            KGTK_BROWSER_SORTING_METADATA_SUPPLEMENTARY)
 
 WIKIDATA_LANGUAGES = read_wikidata_language_metadata('wikidata_language_mapping.json')
+
+KGTK_URL_FORMATTER_TEMPLATES = read_url_formatter_templates(KGTK_URL_FORMATTER_TEMPLATES_FILE)
