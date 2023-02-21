@@ -1,2 +1,5 @@
 temp
 graphs
+graph-cache-db
+output
+wikidata.sqlite3.db
