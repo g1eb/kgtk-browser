@@ -11,7 +11,7 @@ ck.configure_kgtk(
     project_name='kgtk-tutorial',
 )
 pm.execute_notebook(
-    "kgtk-notebooks/use-cases/create_wikidata/partition-wikidata.ipynb",
+    "utils/partition-wikidata.ipynb",
     os.environ["TEMP"] + "/partition-wikidata.out.ipynb",
     kernel_name='python3',
     parameters=dict(
@@ -38,7 +38,7 @@ kgtk("""
   --log-file ./output/kgtk-tutorial/temp.kgtk-tutorial/metadata.pagerank.undirected.summary.txt
 """)
 pm.execute_notebook(
-    "kgtk-notebooks/use-cases/create_wikidata/KGTK-Query-Text-Search-Setup.ipynb",
+    "utils/KGTK-Query-Text-Search-Setup.ipynb",
     os.environ["TEMP"] + "/KGTK-Query-Text-Search-Setup.out.ipynb",
     kernel_name="python3",
     parameters=dict(
