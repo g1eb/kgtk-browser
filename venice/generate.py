@@ -14,6 +14,10 @@ if len(sys.argv) <= 1:
     sys.exit()
 
 
+# Get input file path
+input_path = sys.argv[1]
+
+
 # Get current directory
 current_dir = os.getcwd()
 
@@ -43,7 +47,7 @@ pm.execute_notebook(
     '{}/{}'.format(current_dir, 'utils/01-partition.ipynb'),
     '{}/{}'.format(temp_dir, '01-partition.output.ipynb'),
     parameters=dict(
-        wikidata_input_path='{}/{}'.format(current_dir, 'input.tsv'),
+        wikidata_input_path=input_path,
         wikidata_parts_path=temp_dir,
         temp_folder_path=temp_dir,
         gzip_command='gzip',
