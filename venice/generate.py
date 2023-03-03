@@ -89,3 +89,7 @@ pm.execute_notebook(
         create_es='no',
     )
 )
+
+
+# Copy the generated database over to the top-level output folder
+os.system('cp -r {} {}'.format('output/{}/venice'.format(date), 'output'))
