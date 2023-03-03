@@ -1,9 +1,17 @@
 import os
+import sys
 import pathlib
 import papermill as pm
 from datetime import datetime
 from kgtk.functions import kgtk, kypher
 from kgtk.configure_kgtk_notebooks import ConfigureKGTK
+
+
+# Check if user passed in a file
+if len(sys.argv) <= 1:
+    print('Err, please provide input file arg..')
+    print('For example: `generate.py <input_file.tsv>`')
+    sys.exit()
 
 
 # Get current directory
