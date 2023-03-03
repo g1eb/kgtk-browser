@@ -24,13 +24,15 @@ current_dir = os.getcwd()
 
 # Create temporary directory
 temp_dir = os.path.join(current_dir, 'temp')
-os.makedirs(temp_dir, exist_ok=True)
+os.system('rm -rf {}'.format(temp_dir))
+os.makedirs(temp_dir, exist_ok=False)
 
 
 # Create output directory
 date = datetime.now().strftime('%Y_%m_%d')
 output_dir = os.path.join(current_dir, 'output/{}'.format(date))
-os.makedirs(output_dir, exist_ok=True)
+os.system('rm -rf {}'.format(output_dir))
+os.makedirs(output_dir, exist_ok=False)
 
 
 # Configure KGTK
