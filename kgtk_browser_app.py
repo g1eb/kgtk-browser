@@ -3908,6 +3908,21 @@ def get_acled_forecast(filename):
     return forecast_data
 
 
+@app.route('/kb/get_sentences_for_node/<string:node>', methods=['GET'])
+def get_sentences_for_node(node):
+    '''
+    TODO: this function is going to return a list of sentences for a given node
+
+    Args:
+        node: str (node id, e.g. Q00_participant_Mozambique)
+
+    Returns:
+        ['sentence 1', 'sentence 2', ... 'sentence N']
+    '''
+
+    return []
+
+
 if __name__ == '__main__':
     os.environ['KGTK_BROWSER_CONFIG'] = './browser/backend/kgtk_browser_config.py'
     k_api = KypherAPIObject()
