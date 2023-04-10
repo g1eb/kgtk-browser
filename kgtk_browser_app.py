@@ -3908,8 +3908,8 @@ def get_acled_forecast(filename):
     return forecast_data
 
 
-@app.route('/kb/get_sentences_for_node/<string:node>', methods=['GET'])
-def get_sentences_for_node(node):
+@app.route('/kb/get_sentences_for_node', methods=['GET'])
+def get_sentences_for_node():
     '''
     TODO: this function is going to return a list of sentences for a given node
 
@@ -3917,8 +3917,40 @@ def get_sentences_for_node(node):
         node: str (node id, e.g. Q00_participant_Mozambique)
 
     Returns:
-        ['sentence 1', 'sentence 2', ... 'sentence N']
+        ['sentence 1', 'sentence 2', ..., 'sentence N']
     '''
+
+    # check request args
+    args = flask.request.args
+    node = args.get("node", default=False, type=rb_is_true)
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+
+    try:
+
+        with get_backend() as backend:
+
+            results = backend.rb_get_sentences(
+                limit=9999999999999,
+            )
+
+            if not results:
+                return flask.jsonify({}), 200
+
+            sentences = []
+            for result in results:
+                if len(result) and result[0]:
+                    try:
+                        sentences = ast.literal_eval(result[0])
+                        sentences.append(message)
+                    except Exception as e:
+                        logging.error(e)
+
+            return flask.jsonify(messages), 200
+
+    except Exception as e:
+        logging.error('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
     return []
 
