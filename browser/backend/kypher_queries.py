@@ -1223,6 +1223,7 @@ class KypherAPIObject(object):
                 $edges: (document_id)-[:P00_venice_document_text]->(document_text)
             ''',
             ret='''
+                document_id,
                 document_text
             ''',
             limit= "$LIMIT"
