@@ -3867,6 +3867,17 @@ def get_mf_scores_and_concreteness_by_date():
 
 @app.route('/kb/get_messages', methods=['GET'])
 def get_messages():
+    '''
+    A simple endpoint that returns a list of all telegram messages (documents)
+
+    Output format:
+        [{
+            'id': <message id>,
+            'text': <message text>,
+        }]
+
+    Please note that message id is the internal document id in our KG
+    '''
 
     # check request args
     args = flask.request.args
@@ -3886,10 +3897,13 @@ def get_messages():
 
             messages = []
             for result in results:
-                if len(result) and result[0]:
+                if len(result) and result[1]:
                     try:
-                        message = ast.literal_eval(result[0])
-                        messages.append(message)
+                        message = ast.literal_eval(result[1])
+                        messages.append({
+                            'id': str(result[0]),
+                            'text': message,
+                        })
                     except Exception as e:
                         logging.error(e)
 
