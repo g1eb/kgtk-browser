@@ -120,6 +120,9 @@ app.config.from_envvar('KGTK_BROWSER_CONFIG')
 # Allow urls with trailing slashes
 app.url_map.strict_slashes = False
 
+# Do not sort keys when returning Python dictionaries as JSON
+app.config['JSON_SORT_KEYS'] = False
+
 DEFAULT_SERVICE_PREFIX = '/kgtk/browser/backend/'
 
 DEFAULT_LANGUAGE = 'en'
