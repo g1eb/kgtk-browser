@@ -1228,3 +1228,26 @@ class KypherAPIObject(object):
             ''',
             limit= "$LIMIT"
         )
+
+    def RB_GET_SENTENCES_FOR_PARTICIPANT(self, participant_id: str, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_messages()'.
+            """,
+            name='RB_GET_SENTENCES_FOR_PARTICIPANT',
+            inputs=('edges', 'label'),
+            maxcache=MAX_CACHE_SIZE * 10000000,
+            match='''
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
+                $label: (sentence_id)-[:label]->(sentence_text)
+            ''',
+            where='''
+                participant_id=$participant_id
+            ''',
+            ret='''
+                participant_id,
+                sentence_text
+            ''',
+            limit='$LIMIT'
+        )
