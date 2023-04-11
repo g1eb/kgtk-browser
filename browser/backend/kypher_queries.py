@@ -1193,8 +1193,9 @@ class KypherAPIObject(object):
             maxcache=MAX_CACHE_SIZE * 10000000,
             match='''
                 $edges: (participant_id)-[:P1344]->(event_id),
+                $edges: (event_id)-[:P585]->(event_date),
                 $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
-                $edges: (event_id)-[:P585]->(datetime),
+                $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
                 $label: (sentence_id)-[:label]->(sentence_text)
             ''',
             where='''
@@ -1202,8 +1203,9 @@ class KypherAPIObject(object):
             ''',
             ret='''
                 participant_id,
-                sentence_text,
-                datetime
+                document_id,
+                sentence_id,
+                sentence_text
             ''',
             limit='$LIMIT'
         )
