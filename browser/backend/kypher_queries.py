@@ -1189,19 +1189,32 @@ class KypherAPIObject(object):
             Create the Kypher query used by 'BrowserBackend.rb_get_messages()'.
             """,
             name='RB_GET_SENTENCES_FOR_PARTICIPANT',
-            inputs=('edges', 'label'),
+            inputs=('edges', 'label', 'qualifiers'),
             maxcache=MAX_CACHE_SIZE * 10000000,
             match='''
                 $edges: (participant_id)-[:P1344]->(event_id),
                 $edges: (event_id)-[:P585]->(event_date),
                 $label: (event_id)-[:label]->(event_text),
                 $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
-                $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
                 $label: (sentence_id)-[:label]->(sentence_text),
+                $edges: (sentence_id)-[moral_foundation_type]->(moral_foundation_id),
+                $qualifiers: (moral_foundation_type)-[:P1181]->(moral_foundation_score),
+                $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
                 $edges: (document_id)-[:P585]->(document_date)
             ''',
             where='''
-                participant_id=$participant_id
+                moral_foundation_id in [
+                    'Q00_authority',
+                    'Q00_subversion',
+                    'Q00_fairness',
+                    'Q00_cheating',
+                    'Q00_care',
+                    'Q00_harm',
+                    'Q00_loyalty',
+                    'Q00_betrayal',
+                    'Q00_sanctity',
+                    'Q00_degradation'
+                ] and participant_id=$participant_id
             ''',
             ret='''
                 participant_id,
@@ -1209,6 +1222,8 @@ class KypherAPIObject(object):
                 document_date,
                 sentence_id,
                 sentence_text,
+                moral_foundation_id,
+                moral_foundation_score,
                 event_id,
                 event_date,
                 event_text
