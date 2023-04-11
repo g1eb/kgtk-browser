@@ -1195,6 +1195,7 @@ class KypherAPIObject(object):
                 $edges: (participant_id)-[:P1344]->(event_id),
                 $edges: (event_id)-[:P585]->(event_date),
                 $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
+                $label: (event_id)-[:label]->(event_text),
                 $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
                 $label: (sentence_id)-[:label]->(sentence_text)
             ''',
@@ -1205,7 +1206,10 @@ class KypherAPIObject(object):
                 participant_id,
                 document_id,
                 sentence_id,
-                sentence_text
+                sentence_text,
+                event_id,
+                event_date,
+                event_text
             ''',
             limit='$LIMIT'
         )
