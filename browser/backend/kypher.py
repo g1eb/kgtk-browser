@@ -540,6 +540,11 @@ class BrowserBackend(object):
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
+    def rb_get_sentences_for_participant(self, participant_id, limit: int = 20, fmt=None):
+        query = self.api.RB_GET_SENTENCES_FOR_PARTICIPANT(participant_id, limit)
+        return self.execute_query(query, participant_id=participant_id, LIMIT=limit, fmt=fmt)
+
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def rb_get_messages(self, limit: int = 20, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
