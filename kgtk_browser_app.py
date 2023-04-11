@@ -3950,14 +3950,11 @@ def get_sentences_for_participant(participant_id):
 
         with get_backend() as backend:
 
-            start = datetime.datetime.now()
+            # get results from the database using this kypher query
             results = backend.rb_get_sentences_for_participant(
                 participant_id=participant_id,
                 limit=9999999999999,
             )
-
-            end = datetime.datetime.now()
-            print('duration {}'.format(str(end - start)))
 
             if not results:
                 return flask.jsonify([]), 200
@@ -3978,10 +3975,11 @@ def get_sentences_for_participant(participant_id):
                     response[document_id] = {}
 
                 # get a hold of the document datetime and parse it
-                datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                datetime_match = re.match(datetime_pattern, result[2])[1]
-                datetime_iso = parser.isoparse(datetime_match)
-                response[document_id]['date'] = datetime_iso
+                if 'date' not in response[document_id]:
+                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                    datetime_match = re.match(datetime_pattern, result[2])[1]
+                    datetime_iso = parser.isoparse(datetime_match)
+                    response[document_id]['date'] = datetime_iso
 
                 # get the correct key/label for the emotion scores
                 emotion_key = emotions_mapping[result[3]]
@@ -3994,10 +3992,11 @@ def get_sentences_for_participant(participant_id):
                 if sentence_id not in response[document_id]:
                     response[document_id][sentence_id] = {}
 
-                # unstringify sentence text
-                sentence_text = rb_unstringify(result[6])
-                response[document_id][sentence_id]['text'] = sentence_text
-                response[document_id][sentence_id]['events'] = {}
+                # check if we have sentence text already and add it if not
+                if 'text' not in response[document_id][sentence_id]:
+                    sentence_text = rb_unstringify(result[6])
+                    response[document_id][sentence_id]['text'] = sentence_text
+                    response[document_id][sentence_id]['events'] = {}
 
                 # get the correct key/label for the moral foundation scores
                 moral_foundation_key = scores_mapping[result[7]]
@@ -4011,14 +4010,16 @@ def get_sentences_for_participant(participant_id):
                     response[document_id][sentence_id]['events'][event_id] = {}
 
                 # get a hold of the event datetime and parse it
-                datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                datetime_match = re.match(datetime_pattern, result[10])[1]
-                datetime_iso = parser.isoparse(datetime_match)
-                response[document_id][sentence_id]['events'][event_id]['date'] = datetime_iso
+                if 'date' not in response[document_id][sentence_id]['events'][event_id]:
+                    datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                    datetime_match = re.match(datetime_pattern, result[10])[1]
+                    datetime_iso = parser.isoparse(datetime_match)
+                    response[document_id][sentence_id]['events'][event_id]['date'] = datetime_iso
 
-                # get a hold of the event text
-                event_text = result[11]
-                response[document_id][sentence_id]['events'][event_id]['text'] = event_text
+                # check if we have the event text already and add it if not
+                if 'text' not in response[document_id][sentence_id]['events'][event_id]:
+                    event_text = rb_unstringify(result[11])
+                    response[document_id][sentence_id]['events'][event_id]['text'] = event_text
 
             return flask.jsonify(response), 200
 
