@@ -3922,21 +3922,24 @@ def get_acled_forecast(filename):
     return forecast_data
 
 
-@app.route('/kb/get_sentences_for_node', methods=['GET'])
-def get_sentences_for_node():
+@app.route('/kb/get_sentences_for_participant/<string:participant_id>', methods=['GET'])
+def get_sentences_for_participant(participant_id):
     '''
-    TODO: this function is going to return a list of sentences for a given node
+    This function is going to return a list of sentences for a given participant
 
     Args:
-        node: str (node id, e.g. Q00_participant_Mozambique)
+        participant_id: str (participant node id, e.g. Q00_participant_Mozambique)
 
     Returns:
         ['sentence 1', 'sentence 2', ..., 'sentence N']
     '''
 
+    # return error message if no participant was specified
+    if not participant_id:
+        return flask.jsonify({}), 404
+
     # check request args
     args = flask.request.args
-    node = args.get("node", default=False, type=rb_is_true)
     debug = args.get("debug", default=False, type=rb_is_true)
     verbose = args.get("verbose", default=False, type=rb_is_true)
 
@@ -3944,23 +3947,30 @@ def get_sentences_for_node():
 
         with get_backend() as backend:
 
-            results = backend.rb_get_sentences(
+            start = datetime.datetime.now()
+            results = backend.rb_get_sentences_for_participant(
+                participant_id=participant_id,
                 limit=9999999999999,
             )
 
+            end = datetime.datetime.now()
+            print('duration {}'.format(str(end - start)))
+
             if not results:
-                return flask.jsonify({}), 200
+                return flask.jsonify([]), 200
 
             sentences = []
             for result in results:
-                if len(result) and result[0]:
-                    try:
-                        sentences = ast.literal_eval(result[0])
-                        sentences.append(message)
-                    except Exception as e:
-                        logging.error(e)
+                if not result:
+                    continue
+                try:
+                    # unstringify sentence text
+                    sentence_text = rb_unstringify(result[1])
+                    sentences.append(sentence_text)
+                except Exception as e:
+                    logging.error(e)
 
-            return flask.jsonify(messages), 200
+            return flask.jsonify(sentences), 200
 
     except Exception as e:
         logging.error('ERROR: ' + str(e))
