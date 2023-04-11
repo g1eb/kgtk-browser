@@ -3959,6 +3959,15 @@ def get_sentences_for_participant(participant_id):
             if not results:
                 return flask.jsonify([]), 200
 
+            summary = {
+                'participant_id': result[0],
+                'documents': {
+                    'sentences': {
+                        'events': {},
+                    },
+                },
+            }
+
             sentences = []
             for result in results:
                 if not result:
