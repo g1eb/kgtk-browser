@@ -933,52 +933,6 @@ class KypherAPIObject(object):
             limit='$LIMIT'
         )
 
-    def VENICE_DOCUMENT(self, document_id: str) -> kapi.KypherQuery:
-        return self.kapi.get_query(
-            doc="""
-            Show the full document as it appears in the KG
-            """,
-            name='VENICE_DOCUMENT',
-            inputs=('edges', 'label'),
-            maxcache=MAX_CACHE_SIZE * 100,
-            match='''
-                $edges: (document_id)-[:P31]->(document_instance_of),
-                $edges: (document_id)-[:P00_venice_document_text]->(document_text),
-                $label: (document_id)-[:label]->(document_label)
-            ''',
-            opt1='''
-                $edges: (document_id)-[:P00_venice_contain_sentence]->(sentence_id),
-                $edges: (sentence_id)-[:P31]->(sentence_instance_of),
-                $edges: (sentence_id)-[:P585]->(sentence_datetime),
-                $edges: (sentence_id)-[:P00_venice_data_source]->(sentence_data_source),
-                $label: (sentence_id)-[:label]->(sentence_text)
-            ''',
-            opt2='''
-                $edges: (document_id)-[:P00_venice_emo]->(emotion_id),
-                $label: (emotion_id)-[:label]->(emotion_text)
-            ''',
-            opt3='''
-                $edges: (document_id)-[:P585]->(document_datetime)
-            ''',
-            where='''
-                document_id=$document_id
-            ''',
-            ret='''
-                document_id,
-                document_text,
-                document_label,
-                document_instance_of,
-                document_datetime,
-                sentence_id,
-                sentence_text,
-                sentence_instance_of,
-                sentence_data_source,
-                sentence_datetime,
-                emotion_id,
-                emotion_text
-            '''
-        )
-
     def RB_GET_EVENTS_AND_SCORES_BY_DATE(self, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
@@ -1252,4 +1206,50 @@ class KypherAPIObject(object):
                 datetime
             ''',
             limit='$LIMIT'
+        )
+
+    def VENICE_DOCUMENT(self, document_id: str) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Show the full document as it appears in the KG
+            """,
+            name='VENICE_DOCUMENT',
+            inputs=('edges', 'label'),
+            maxcache=MAX_CACHE_SIZE * 100,
+            match='''
+                $edges: (document_id)-[:P31]->(document_instance_of),
+                $edges: (document_id)-[:P00_venice_document_text]->(document_text),
+                $label: (document_id)-[:label]->(document_label)
+            ''',
+            opt1='''
+                $edges: (document_id)-[:P00_venice_contain_sentence]->(sentence_id),
+                $edges: (sentence_id)-[:P31]->(sentence_instance_of),
+                $edges: (sentence_id)-[:P585]->(sentence_datetime),
+                $edges: (sentence_id)-[:P00_venice_data_source]->(sentence_data_source),
+                $label: (sentence_id)-[:label]->(sentence_text)
+            ''',
+            opt2='''
+                $edges: (document_id)-[:P00_venice_emo]->(emotion_id),
+                $label: (emotion_id)-[:label]->(emotion_text)
+            ''',
+            opt3='''
+                $edges: (document_id)-[:P585]->(document_datetime)
+            ''',
+            where='''
+                document_id=$document_id
+            ''',
+            ret='''
+                document_id,
+                document_text,
+                document_label,
+                document_instance_of,
+                document_datetime,
+                sentence_id,
+                sentence_text,
+                sentence_instance_of,
+                sentence_data_source,
+                sentence_datetime,
+                emotion_id,
+                emotion_text
+            '''
         )
