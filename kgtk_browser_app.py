@@ -3977,28 +3977,35 @@ def get_sentences_for_participant(participant_id):
                 if document_id not in response:
                     response[document_id] = {}
 
-                sentence_id = result[2]
+                # get a hold of the document datetime and parse it
+                datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                datetime_match = re.match(datetime_pattern, result[2])[1]
+                datetime_iso = parser.isoparse(datetime_match)
+                response[document_id]['date'] = datetime_iso
+
+                # check if this sentence already exists in our response summary
+                sentence_id = result[3]
                 if sentence_id not in response[document_id]:
                     response[document_id][sentence_id] = {}
 
                 # unstringify sentence text
-                sentence_text = rb_unstringify(result[3])
+                sentence_text = rb_unstringify(result[4])
                 response[document_id][sentence_id]['text'] = sentence_text
                 response[document_id][sentence_id]['events'] = {}
 
                 # check if this event already exists in our response sumamry
-                event_id = result[4]
+                event_id = result[5]
                 if event_id not in response[document_id][sentence_id]['events']:
                     response[document_id][sentence_id]['events'][event_id] = {}
 
                 # get a hold of the event datetime and parse it
                 datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                datetime_match = re.match(datetime_pattern, result[5])[1]
+                datetime_match = re.match(datetime_pattern, result[6])[1]
                 datetime_iso = parser.isoparse(datetime_match)
                 response[document_id][sentence_id]['events'][event_id]['date'] = datetime_iso
 
                 # get a hold of the event text
-                event_text = result[6]
+                event_text = result[7]
                 response[document_id][sentence_id]['events'][event_id]['text'] = event_text
 
             return flask.jsonify(response), 200

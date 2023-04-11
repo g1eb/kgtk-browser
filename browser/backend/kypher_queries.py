@@ -1194,10 +1194,11 @@ class KypherAPIObject(object):
             match='''
                 $edges: (participant_id)-[:P1344]->(event_id),
                 $edges: (event_id)-[:P585]->(event_date),
-                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
                 $label: (event_id)-[:label]->(event_text),
+                $edges: (event_id)-[:P00_venice_from_sentence]->(sentence_id),
                 $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
-                $label: (sentence_id)-[:label]->(sentence_text)
+                $label: (sentence_id)-[:label]->(sentence_text),
+                $edges: (document_id)-[:P585]->(document_date)
             ''',
             where='''
                 participant_id=$participant_id
@@ -1205,6 +1206,7 @@ class KypherAPIObject(object):
             ret='''
                 participant_id,
                 document_id,
+                document_date,
                 sentence_id,
                 sentence_text,
                 event_id,
