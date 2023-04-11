@@ -3983,35 +3983,41 @@ def get_sentences_for_participant(participant_id):
                 datetime_iso = parser.isoparse(datetime_match)
                 response[document_id]['date'] = datetime_iso
 
+                # get the correct key/label for the emotion scores
+                emotion_key = emotions_mapping[result[3]]
+                if emotion_key not in response[document_id]:
+                    emotion_score = float(result[4])
+                    response[document_id][emotion_key] = emotion_score
+
                 # check if this sentence already exists in our response summary
-                sentence_id = result[3]
+                sentence_id = result[5]
                 if sentence_id not in response[document_id]:
                     response[document_id][sentence_id] = {}
 
                 # unstringify sentence text
-                sentence_text = rb_unstringify(result[4])
+                sentence_text = rb_unstringify(result[6])
                 response[document_id][sentence_id]['text'] = sentence_text
                 response[document_id][sentence_id]['events'] = {}
 
                 # get the correct key/label for the moral foundation scores
-                moral_foundation_key = scores_mapping[result[5]]
+                moral_foundation_key = scores_mapping[result[7]]
                 if moral_foundation_key not in response[document_id][sentence_id]:
-                    moral_foundation_score = float(result[6])
+                    moral_foundation_score = float(result[8])
                     response[document_id][sentence_id][moral_foundation_key] = moral_foundation_score
 
                 # check if this event already exists in our response sumamry
-                event_id = result[7]
+                event_id = result[9]
                 if event_id not in response[document_id][sentence_id]['events']:
                     response[document_id][sentence_id]['events'][event_id] = {}
 
                 # get a hold of the event datetime and parse it
                 datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
-                datetime_match = re.match(datetime_pattern, result[8])[1]
+                datetime_match = re.match(datetime_pattern, result[10])[1]
                 datetime_iso = parser.isoparse(datetime_match)
                 response[document_id][sentence_id]['events'][event_id]['date'] = datetime_iso
 
                 # get a hold of the event text
-                event_text = result[9]
+                event_text = result[11]
                 response[document_id][sentence_id]['events'][event_id]['text'] = event_text
 
             return flask.jsonify(response), 200
