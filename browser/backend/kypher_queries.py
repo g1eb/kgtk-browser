@@ -1200,10 +1200,24 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[moral_foundation_type]->(moral_foundation_id),
                 $qualifiers: (moral_foundation_type)-[:P1181]->(moral_foundation_score),
                 $edges: (sentence_id)-[:P00_venice_from_doc]->(document_id),
-                $edges: (document_id)-[:P585]->(document_date)
+                $edges: (document_id)-[:P585]->(document_date),
+                $edges: (document_id)-[emotion_type]->(emotion_id),
+                $qualifiers: (emotion_type)-[:P1181]->(emotion_score)
             ''',
             where='''
-                moral_foundation_id in [
+                emotion_id in [
+                    'Q00_anticipation',
+                    'Q00_love',
+                    'Q00_joy',
+                    'Q00_pessimism',
+                    'Q00_optimism',
+                    'Q00_sadness',
+                    'Q00_disgust',
+                    'Q00_anger',
+                    'Q00_surprise',
+                    'Q00_fear',
+                    'Q00_trust'
+                ] and moral_foundation_id in [
                     'Q00_authority',
                     'Q00_subversion',
                     'Q00_fairness',
@@ -1220,6 +1234,8 @@ class KypherAPIObject(object):
                 participant_id,
                 document_id,
                 document_date,
+                emotion_id,
+                emotion_score,
                 sentence_id,
                 sentence_text,
                 moral_foundation_id,
