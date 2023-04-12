@@ -43,5 +43,5 @@
     ]
   },
   "homepage": ".",
-  "proxy": "http://localhost:3233"
+  "proxy": "http://localhost:5006"
 }
