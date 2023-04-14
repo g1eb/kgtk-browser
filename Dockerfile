@@ -24,8 +24,6 @@ COPY requirements.txt /src/requirements.txt
 
 RUN pip install -r /src/requirements.txt
 
-RUN pip install -e git+https://github.com/usc-isi-i2/kgtk.git@ee053b021d83c4d74797a24e98c25b71c6b852c3#egg=kgtk
-
 COPY kgtk_browser_app.py /src/
 COPY sync_properties_sort_metadata.json /src/
 COPY kgtk_browser_sorting_metadata.tsv /src/
