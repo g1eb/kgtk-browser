@@ -4030,6 +4030,15 @@ def get_sentences_for_participant(participant_id):
     return []
 
 
+@app.route('/peer', methods=['GET'])
+def peer():
+    '''
+    PeerAPI be here
+    '''
+    response = {'status': 'ok'}
+    return flask.jsonify(response), 200
+
+
 if __name__ == '__main__':
     os.environ['KGTK_BROWSER_CONFIG'] = './browser/backend/kgtk_browser_config.py'
     k_api = KypherAPIObject()
