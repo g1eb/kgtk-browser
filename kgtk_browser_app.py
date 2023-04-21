@@ -2852,6 +2852,9 @@ def get_daily_emotion_values():
     match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
     match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
+    # type of aggregation to use
+    aggregation_type = args.get('aggregation_type', 'sum')
+
     try:
         with get_backend() as backend:
 
@@ -2915,7 +2918,10 @@ def get_daily_emotion_values():
                 start = datetime.datetime.now()
 
             df = pd.DataFrame(matches)
-            grouped_by_date = df.groupby('datetime').sum()
+            if aggregation_type == 'avg':
+                grouped_by_date = df.groupby('datetime').mean()
+            else:
+                grouped_by_date = df.groupby('datetime').sum()
 
             min_date = grouped_by_date.index.min()
             max_date = grouped_by_date.index.max()
