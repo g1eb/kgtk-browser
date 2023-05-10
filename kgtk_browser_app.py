@@ -2793,6 +2793,20 @@ def get_events_and_scores_by_date():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/get_actors_and_events', methods=['GET'])
+def get_actors_and_events():
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+
+    input_file = open('event_types_count.json')
+    data = json.load(input_file)
+    input_file.close()
+    return flask.jsonify(data), 200
+
+
 @app.route('/kb/document/<string:document_id>', methods=['GET'])
 def venice_document(document_id):
     backend = get_backend()
