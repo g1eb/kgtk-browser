@@ -253,9 +253,9 @@ def get_info():
         'graph_id': app.config.get('GRAPH_ID'),
         'graph_cache': app.config.get('GRAPH_CACHE'),
         'version': app.config.get('VERSION'),
-        'hasClassGraphVisualization': True,
+        'hasClassGraphVisualization': False,
         'hasIdentifiers': True,
-        'hasGallery': True,
+        'hasGallery': False,
     }
     return flask.jsonify(info), 200
 
