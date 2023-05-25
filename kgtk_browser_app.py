@@ -4060,20 +4060,20 @@ def get_peer_output():
     lang = args.get("lang", default="en")
 
     # grab system, prompt and preamble from the request object
+    prompt = args.get('input', '')
     system = args.get('system', '')
-    prompt = request.get('prompt', '')
-    preamb = request.get('preamble', '')
-    preamb = preamb if len(preamb) > 0 else None
+    preamble = args.get('preamble', '')
+    preamble = preamble if len(preamble) > 0 else None
 
     # call venice_peer to get system response
-    preamb, resp, error, idset = peer.get_response(system, prompt, preamb)
+    preamble, resp, error, idset = peer.get_response(system, prompt, preamble)
 
     # convert the keys in the idset to lists
     idset = dict([(k, list(v)) for k, v in idset.items()])
 
     # create response dict
     output = {
-        "preamble": preamb,
+        "preamble": preamble,
         "response": resp,
         "error": error,
         "idset": idset,
