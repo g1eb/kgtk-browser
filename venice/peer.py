@@ -16,7 +16,11 @@ import json
 MAX_TOKENS = 4096 - 500
 KG_DOWNWEIGHT_SCORE = 0.1
 
-#openai.api_key = "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"
+
+# read openai key from the environment variable
+openai_key = os.environ.get('OPENAI_KEY')
+openai.api_key = openai_key
+
 
 def clean_up_query(query):
     return " ".join(word_tokenize(query))
