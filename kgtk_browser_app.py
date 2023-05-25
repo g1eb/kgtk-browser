@@ -4055,9 +4055,15 @@ def get_sentences_for_participant(participant_id):
 @app.route('/kb/peer', methods=['POST'])
 def get_peer_output():
     '''
-    Venice Peer be here
+    Venice Peer endpoint
+
+    Args:
+        - input: (str) users prompt for the peer system
+        - system: (str) context used to set the system up
+        - preamble: (str) preamble used to feed into the system
     '''
 
+    # get request arguments
     args = flask.request.args
     lang = args.get("lang", default="en")
 
