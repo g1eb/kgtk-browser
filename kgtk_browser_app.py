@@ -2801,7 +2801,7 @@ def get_actors_and_events():
     debug = args.get("debug", default=False, type=rb_is_true)
     verbose = args.get("verbose", default=False, type=rb_is_true)
 
-    input_file = open('event_types_count.json')
+    input_file = open('actors_and_events.json')
     data = json.load(input_file)
     input_file.close()
     return flask.jsonify(data), 200
