@@ -39,6 +39,8 @@ from kgtk.visualize.visualize_api import KgtkVisualize
 
 from browser.backend.kypher_queries import KypherAPIObject
 
+from venice import peer
+
 import logging
 
 # set the desired log level of the server
