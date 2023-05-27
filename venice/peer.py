@@ -11,6 +11,7 @@ from nltk import word_tokenize
 
 import tiktoken
 import json
+import os
 
 
 MAX_TOKENS = 4096 - 500
