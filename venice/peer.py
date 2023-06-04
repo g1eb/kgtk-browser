@@ -1,15 +1,13 @@
-import openai
-
 from whoosh.index import open_dir
 from whoosh.fields import *
 from whoosh import qparser
 from whoosh.qparser import QueryParser
 from whoosh import scoring
 
-
 from nltk import word_tokenize
 
 import tiktoken
+import openai
 import json
 import os
 
@@ -26,6 +24,7 @@ openai.api_key = openai_key
 def clean_up_query(query):
     return " ".join(word_tokenize(query))
 
+
 def custom_scoring(searcher, fieldname, text, matcher):
     # frequency = scoring.Frequency().scorer(searcher, fieldname, text).score(matcher)
     # tfidf =  scoring.TF_IDF().scorer(searcher, fieldname, text).score(matcher)
@@ -39,6 +38,7 @@ def num_tokens_from_string(string: str, encoding_name: str="gpt2") -> int:
     encoding = tiktoken.get_encoding(encoding_name)
     num_tokens = len(encoding.encode(string))
     return num_tokens
+
 
 def get_facts(prompt=None, token_allowance=MAX_TOKENS):
     ix = open_dir("indexdir")
