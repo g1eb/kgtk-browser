@@ -1,7 +1,7 @@
 # A dockerfile for running the kgtk-browser
 # python 3.9.7 is a KGTK 1.1.0 requirement
 # this comes with a debian version 11 (bullseye)
-FROM python:3.9.7
+FROM --platform=linux/amd64 python:3.9.7
 
 # Add graph-tool repository to the list of known apt sources
 RUN echo "deb [ arch=amd64 ] https://downloads.skewed.de/apt bullseye main" >> /etc/apt/sources.list
