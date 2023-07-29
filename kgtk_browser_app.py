@@ -3684,15 +3684,15 @@ def get_mf_scores_by_date():
                             'id': sentence_id,
                             'datetime': values['datetime'],
                             'authority': values['authority'],
-                            'subversion': values['subversion'],
                             'fairness': values['fairness'],
-                            'cheating': values['cheating'],
                             'care': values['care'],
-                            'harm': values['harm'],
                             'loyalty': values['loyalty'],
-                            'betrayal': values['betrayal'],
                             'sanctity': values['sanctity'],
                             'degradation': values['degradation'],
+                            'betrayal': values['betrayal'],
+                            'harm': values['harm'],
+                            'cheating': values['cheating'],
+                            'subversion': values['subversion'],
                         })
                     except KeyError:
                         print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
@@ -3771,15 +3771,15 @@ def get_mf_scores_by_date_for_node(node):
                             "id": sentence_id,
                             "datetime": values['datetime'],
                             'authority': values['authority'],
-                            'subversion': values['subversion'],
                             'fairness': values['fairness'],
-                            'cheating': values['cheating'],
                             'care': values['care'],
-                            'harm': values['harm'],
                             'loyalty': values['loyalty'],
-                            'betrayal': values['betrayal'],
                             'sanctity': values['sanctity'],
                             'degradation': values['degradation'],
+                            'betrayal': values['betrayal'],
+                            'harm': values['harm'],
+                            'cheating': values['cheating'],
+                            'subversion': values['subversion'],
                         })
                     except KeyError:
                         print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(sentence_id))
