@@ -982,12 +982,13 @@ class KypherAPIObject(object):
             match='''
                 $edges: (participant_id)-[:P1344]->(event_id),
                 $label: (participant_id)-[:label]->(participant_label),
-                $edges: (event_id)-[:P31]->(:Q00_venice_eventtype),
-                $label: (event_id)-[:label]->(event_label)
+                $edges: (event_id)-[:P31]->(:Q00_venice_event),
+                $edges: (event_id)-[:P00_venice_eventtype]->(event_type),
+                $label: (event_type)-[:label]->(event_type_label)
             ''',
             ret='''
                 participant_label,
-                event_label
+                event_type_label
             ''',
             limit= "$LIMIT"
         )
