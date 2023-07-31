@@ -971,7 +971,25 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
-    def RB_GET_EMOTIONS_WITH_P585(self,limit: int) -> kapi.KypherQuery:
+    def RB_GET_EVENTS_AND_ACTORS(self, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_events_and_actors()'.
+            """,
+            name='RB_GET_EVENTS_AND_ACTORS',
+            inputs=('edges', 'label', 'qualifiers'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (event_id)-[:P31]->(:Q00_venice_eventtype),
+                $label: (event_id)-[:label]->(event_type)
+            ''',
+            ret='''
+                event_type
+            ''',
+            limit= "$LIMIT"
+        )
+
+    def RB_GET_EMOTIONS_WITH_P585(self, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""
             Create the Kypher query used by 'BrowserBackend.rb_get_emotions_with_p585()'.

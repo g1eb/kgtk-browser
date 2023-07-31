@@ -475,6 +475,17 @@ class BrowserBackend(object):
         return self.execute_query(query, LIMIT=limit, fmt=fmt)
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
+    def rb_get_events_and_actors(self,limit: int = 20, fmt=None):
+        """
+        Retrieve all event types and the most prominent actors for each event
+        """
+
+        query = self.api.RB_GET_EVENTS_AND_ACTORS(limit)
+
+        return self.execute_query(query, LIMIT=limit, fmt=fmt)
+
+
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def rb_get_emotions_with_p585(self, limit: int = 20, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
