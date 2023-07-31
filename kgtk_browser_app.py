@@ -2816,9 +2816,86 @@ def get_events_and_actors():
             if match_label_prefixes:
                 results = backend.rb_get_events_and_actors(limit=match_label_prefixes_limit)
 
-                event_types = []
+                # Initialize events array
+                # This will hold events and their counts
+                # This will also keep track of participants and their counts
+                events = {}
+
                 for result in results:
-                    event_types.append(rb_unstringify(result[0]))
+
+                    # get the participant label as a string
+                    participant_label = rb_unstringify(result[0])
+
+                    # get the main and sub event labels as a string
+                    event_type_label = rb_unstringify(result[1])
+                    try:
+                        main_event, sub_event = event_type_label.split(':')
+                    except ValueError:
+                        main_event = event_type_label
+
+                    # add main event to the events list if it's new
+                    if main_event not in events:
+                        events[main_event] = {
+                            'value': 1,
+                            'name': main_event,
+                            'path': main_event,
+                            'children': [],
+                        }
+
+                    # otherwise just update the counter
+                    else:
+                        events[main_event]['value'] += 1
+
+                    # if there's no sub_event - don't worry about it
+                    if not sub_event:
+                        continue
+
+                    # Look for the child event in the children array
+                    child_event_found = None
+                    for child_event in events[main_event]['children']:
+                        if child_event['name'] == sub_event:
+                            child_event_found = True
+
+                    # add child event to the childrens list if it's new
+                    if not child_event_found:
+                        child_event = {
+                            'name': sub_event,
+                            'path': '{}/{}'.format(main_event, sub_event),
+                            'value': 1,
+                            'children': [],
+                        }
+                        events[main_event]['children'].append(child_event)
+
+                    # otherwise just update the counter
+                    else:
+                        child_event['value'] += 1
+
+                    # if there's no participant - don't worry about it
+                    if not participant_label:
+                        continue
+
+                    # Look for the participant in the sub event children array
+                    participant_found = None
+                    for participant in child_event['children']:
+                        if participant['name'] == participant_label:
+                            participant_found = True
+
+                    # add participant to the childrens list if it's new
+                    if not participant_found:
+                        participant = {
+                            'name': participant_label,
+                            'path': '{}/{}/{}'.format(main_event, sub_event, participant_label),
+                            'value': 1,
+                        }
+                        child_event['children'].append(participant)
+
+                    # otherwise just update the counter
+                    else:
+                        participant['value'] += 1
+
+                event_counts = []
+                for event, values in events.items():
+                    event_counts.append(values)
 
                 if verbose:
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
@@ -2826,7 +2903,7 @@ def get_events_and_actors():
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
 
-            return flask.jsonify(results_grouped_by_date), 200
+            return flask.jsonify(event_counts), 200
     except Exception as e:
         print('ERROR: ' + str(e))
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
