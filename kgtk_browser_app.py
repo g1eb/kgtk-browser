@@ -45,7 +45,7 @@ import logging
 
 # set the desired log level of the server
 log = logging.getLogger('werkzeug')
-log.setLevel(40)
+log.setLevel(50)
 
 
 # map emotion Qnode ids to labels
