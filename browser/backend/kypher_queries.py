@@ -977,14 +977,17 @@ class KypherAPIObject(object):
             Create the Kypher query used by 'BrowserBackend.rb_get_events_and_actors()'.
             """,
             name='RB_GET_EVENTS_AND_ACTORS',
-            inputs=('edges', 'label', 'qualifiers'),
+            inputs=('edges', 'label'),
             maxcache=MAX_CACHE_SIZE * 10000,
             match='''
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $label: (participant_id)-[:label]->(participant_label),
                 $edges: (event_id)-[:P31]->(:Q00_venice_eventtype),
-                $label: (event_id)-[:label]->(event_type)
+                $label: (event_id)-[:label]->(event_label)
             ''',
             ret='''
-                event_type
+                participant_label,
+                event_label
             ''',
             limit= "$LIMIT"
         )
