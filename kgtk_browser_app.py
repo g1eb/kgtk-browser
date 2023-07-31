@@ -2795,18 +2795,41 @@ def get_events_and_scores_by_date():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
-@app.route('/kb/get_actors_and_events', methods=['GET'])
-def get_actors_and_events():
+@app.route('/kb/get_events_and_actors', methods=['GET'])
+def get_events_and_actors():
 
     args = flask.request.args
     lang = args.get("lang", default="en")
     debug = args.get("debug", default=False, type=rb_is_true)
     verbose = args.get("verbose", default=False, type=rb_is_true)
 
-    input_file = open('actors_and_events.json')
-    data = json.load(input_file)
-    input_file.close()
-    return flask.jsonify(data), 200
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            if match_label_prefixes:
+                results = backend.rb_get_events_and_actors(limit=match_label_prefixes_limit)
+
+                event_types = []
+                for result in results:
+                    event_types.append(rb_unstringify(result[0]))
+
+                if verbose:
+                    print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(results_grouped_by_date), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
 @app.route('/kb/document/<string:document_id>', methods=['GET'])
