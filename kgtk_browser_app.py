@@ -2785,6 +2785,7 @@ def get_events_and_scores_by_date():
                     for event in events:
                         scores = event['scores']
                         event['max_score'] = max(scores, key=scores.get)
+                        del event['scores']
 
             if debug:
                 print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
