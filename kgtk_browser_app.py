@@ -2742,17 +2742,27 @@ def get_events_and_scores_by_date():
                     if sentence_id not in results_grouped_by_sentence:
                         results_grouped_by_sentence[sentence_id] = {}
 
+                    # add empty result obj if it is not in the set already
+                    if 'sentence_text' not in results_grouped_by_sentence[sentence_id]:
+                        sentence_text = str(result[1])
+                        try:
+                            sentence_text = ast.literal_eval(result[1])
+                        except Exception as e:
+                            sentence_text = sentence_text.replace("'", '')
+                            logging.error(e)
+                        results_grouped_by_sentence[sentence_id]['sentence_text'] = sentence_text
+
                     # clean up datetime str and add it to the result obj
                     if 'datetime' not in results_grouped_by_sentence[sentence_id]:
-                        datetime_str = result[1]
+                        datetime_str = result[2]
                         datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
                         datetime_match = re.match(datetime_pattern, datetime_str)[1]
                         results_grouped_by_sentence[sentence_id]['datetime'] = datetime_match
 
                     # get the correct key/label for the moral foundation score
-                    mf_key = scores_mapping[result[2]]
+                    mf_key = scores_mapping[result[3]]
                     if mf_key not in results_grouped_by_sentence[sentence_id]:
-                        mf_score = float(result[3])
+                        mf_score = float(result[4])
                         results_grouped_by_sentence[sentence_id][mf_key] = round(mf_score, 3)
 
                 results_grouped_by_date = {}
@@ -2764,6 +2774,7 @@ def get_events_and_scores_by_date():
                     try:
                         results_grouped_by_date[date].append({
                             "id": sentence_id,
+                            "text": values['sentence_text'],
                             "scores": {
                                 'authority': values['authority'],
                                 'subversion': values['subversion'],
