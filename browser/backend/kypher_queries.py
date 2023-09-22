@@ -945,6 +945,7 @@ class KypherAPIObject(object):
                 $edges: (sentence_id)-[:P31]->(:Q00_venice_sentence),
                 $edges: (sentence_id)-[:P585]->(sentence_datetime),
                 $edges: (sentence_id)-[quality_type]->(quality_id),
+                $label: (sentence_id)-[:label]->(sentence_text),
                 $qualifiers: (quality_type)-[:P1181]->(quality_score)
             ''',
             where='''
@@ -964,6 +965,7 @@ class KypherAPIObject(object):
             ''',
             ret='''
                 sentence_id,
+                sentence_text,
                 sentence_datetime,
                 quality_id,
                 quality_score
