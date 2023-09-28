@@ -3742,8 +3742,8 @@ def get_daily_mf_and_emotion_values_for_node(node):
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
-@app.route('/kb/get_mf_scores_by_date', methods=['GET'])
-def get_mf_scores_by_date():
+@app.route('/kb/get_emotion_scores_by_date', methods=['get'])
+def get_emotion_scores_by_date():
 
     args = flask.request.args
     lang = args.get("lang", default="en")
@@ -3763,6 +3763,91 @@ def get_mf_scores_by_date():
             matches = []
 
             if match_label_prefixes:
+                results = backend.rb_get_emotions_with_p585(
+							  limit=match_label_prefixes_limit)
+
+                if verbose:
+                    print("match_label_prefixes: got %d matches" % len(results), file=sys.stderr, flush=true)
+
+                results_grouped_by_document = {}
+                for result in results:
+                    document_id = result[0]
+
+                    # add empty result obj if it is not in the set already
+                    if document_id not in results_grouped_by_document:
+                        results_grouped_by_document[document_id] = {}
+
+                    # clean up datetime str and add it to the result obj
+                    if 'datetime' not in results_grouped_by_document[document_id]:
+                        datetime_str = result[1]
+                        datetime_pattern = re.compile('\^(\d+-\d+-\d+T\d+:\d+:\d+Z)\/11')
+                        datetime_match = re.match(datetime_pattern, result[1])[1]
+                        results_grouped_by_document[document_id]['datetime'] = datetime_match
+
+                    # get the correct key/label for the moral foundation score
+                    emotion_key = emotions_mapping[result[2]]
+                    if emotion_key not in results_grouped_by_document[document_id]:
+                        emotion_score = float(result[3])
+                        results_grouped_by_document[document_id][emotion_key] = emotion_score
+
+                for document_id, values in results_grouped_by_document.items():
+                    try:
+
+                        matches.append({
+                            'id': document_id,
+                            'datetime': values['datetime'],
+                            'anger': values['anger'],
+                            'anticipation': values['anticipation'],
+                            'disgust': values['disgust'],
+                            'fear': values['fear'],
+                            'joy': values['joy'],
+                            'love': values['love'],
+                            'optimism': values['optimism'],
+                            'pessimism': values['pessimism'],
+                            'sadness': values['sadness'],
+                            'surprise': values['surprise'],
+                            'trust': values['trust'],
+                        })
+                    except KeyError:
+                        print('sentence missing moral foundation scores: https://venice.isi.edu/browser/{}'.format(document_id))
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+                start = datetime.datetime.now()
+
+            df = pd.DataFrame(matches)
+            out_df = df.groupby('datetime').sum()
+
+            if debug:
+                print('finished pandas part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(out_df.to_dict()), 200
+    except Exception as e:
+        print('error: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
+@app.route('/kb/get_mf_scores_by_date', methods=['get'])
+def get_mf_scores_by_date():
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+
+    debug = args.get("debug", default=false, type=rb_is_true)
+    verbose = args.get("verbose", default=false, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=true, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=true, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            matches = []
+
+            if match_label_prefixes:
                 results = backend.rb_get_moral_foundations_with_p585(
 							  limit=match_label_prefixes_limit)
 
@@ -3770,6 +3855,7 @@ def get_mf_scores_by_date():
                     print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
 
                 results_grouped_by_sentence = {}
+
                 for result in results:
                     sentence_id = result[0]
 
