@@ -3833,11 +3833,11 @@ def get_mf_scores_by_date():
     args = flask.request.args
     lang = args.get("lang", default="en")
 
-    debug = args.get("debug", default=false, type=rb_is_true)
-    verbose = args.get("verbose", default=false, type=rb_is_true)
-    match_label_prefixes: bool = args.get("match_label_prefixes", default=true, type=rb_is_true)
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
     match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
-    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=true, type=rb_is_true)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
 
     try:
         with get_backend() as backend:
