@@ -2921,6 +2921,64 @@ def get_events_and_actors():
         flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
 
+@app.route('/kb/get_participants', methods=['GET'])
+def get_participans():
+
+    args = flask.request.args
+    lang = args.get("lang", default="en")
+    debug = args.get("debug", default=False, type=rb_is_true)
+    verbose = args.get("verbose", default=False, type=rb_is_true)
+
+    match_label_prefixes: bool = args.get("match_label_prefixes", default=True, type=rb_is_true)
+    match_label_prefixes_limit: intl = args.get("match_label_prefixes_limit", default=99999999999999999, type=int)
+    match_label_ignore_case: bool = args.get("match_label_ignore_case", default=True, type=rb_is_true)
+
+    try:
+        with get_backend() as backend:
+
+            if debug:
+                start = datetime.datetime.now()
+
+            if match_label_prefixes:
+                results = backend.rb_get_participants_and_events(limit=match_label_prefixes_limit)
+
+                # Initialize participants array
+                # This will hold participants and their event counts
+                participants = {}
+
+                for result in results:
+
+                    # get the participant label as a string
+                    participant_label = rb_unstringify(result[0])
+
+                    # get the participant id as a string
+                    participant_id = result[1]
+
+                    # get the main and sub event labels as a string
+                    event_id = result[2]
+
+                    # add participant to the participants dict if new
+                    if participant_id not in participants:
+                        participants[participant_id] = {
+                            'count': 1,
+                            'name': participant_label,
+                        }
+                    else:
+                        # otherwise just update the counter
+                        participants[participant_id]['count'] += 1
+
+                if verbose:
+                    print("match_label_prefixes: Got %d matches" % len(results), file=sys.stderr, flush=True)
+
+            if debug:
+                print('finished sql part, duration: ', str(datetime.datetime.now() - start ))
+
+            return flask.jsonify(participants), 200
+    except Exception as e:
+        print('ERROR: ' + str(e))
+        flask.abort(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+
 @app.route('/kb/document/<string:document_id>', methods=['GET'])
 def venice_document(document_id):
     backend = get_backend()
