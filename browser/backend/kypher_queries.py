@@ -995,6 +995,27 @@ class KypherAPIObject(object):
             limit= "$LIMIT"
         )
 
+    def RB_GET_PARTICIPANTS_AND_EVENTS(self, limit: int) -> kapi.KypherQuery:
+        return self.kapi.get_query(
+            doc="""
+            Create the Kypher query used by 'BrowserBackend.rb_get_participants_and_events()'.
+            """,
+            name='RB_GET_PARTICIPANTS_AND_EVENTS',
+            inputs=('edges', 'label'),
+            maxcache=MAX_CACHE_SIZE * 10000,
+            match='''
+                $edges: (participant_id)-[:P1344]->(event_id),
+                $label: (participant_id)-[:label]->(participant_label),
+                $edges: (event_id)-[:P31]->(:Q00_venice_event)
+            ''',
+            ret='''
+                participant_label,
+                participant_id,
+                event_id
+            ''',
+            limit= "$LIMIT"
+        )
+
     def RB_GET_EMOTIONS_WITH_P585(self, limit: int) -> kapi.KypherQuery:
         return self.kapi.get_query(
             doc="""

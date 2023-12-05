@@ -486,6 +486,17 @@ class BrowserBackend(object):
 
 
     @lru_cache(maxsize=LRU_CACHE_SIZE)
+    def rb_get_participants_and_events(self,limit: int = 20, fmt=None):
+        """
+        Retrieve all participants and events that they are in
+        """
+
+        query = self.api.RB_GET_PARTICIPANTS_AND_EVENTS(limit)
+
+        return self.execute_query(query, LIMIT=limit, fmt=fmt)
+
+
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def rb_get_emotions_with_p585(self, limit: int = 20, fmt=None):
         """Retrieve nodes and labels for all nodes with labels starting with 'prefix'.
 
