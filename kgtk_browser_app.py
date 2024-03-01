@@ -4362,6 +4362,6 @@ if __name__ == '__main__':
         log = logging.getLogger('werkzeug')
         log.setLevel(0)
 
-        app.run(host='0.0.0.0', port=5006, debug=True, use_reloader=True)
+        app.run(host='0.0.0.0', port=5007, debug=True, use_reloader=True)
 
-    app.run(host='0.0.0.0', port=5006, debug=False, use_reloader=False)
+    app.run(host='0.0.0.0', port=5007, debug=False, use_reloader=False)
