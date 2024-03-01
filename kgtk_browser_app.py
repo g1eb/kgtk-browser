@@ -4203,6 +4203,14 @@ def get_acled_forecast(filename):
     return forecast_data
 
 
+@app.route('/kb/get_philippines_forecast/<string:filename>', methods=['GET'])
+def get_philippines_forecast(filename):
+
+    forecast_data = open('/data/philippines/forecasts/{}'.format(filename)).read()
+
+    return forecast_data
+
+
 @app.route('/kb/get_sentences_for_participant/<string:participant_id>', methods=['GET'])
 def get_sentences_for_participant(participant_id):
     '''
